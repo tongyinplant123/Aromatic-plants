@@ -1,4 +1,4 @@
-<img width="758" height="187" alt="image" src="https://github.com/user-attachments/assets/3825e73f-a262-4ade-b163-d33a9563d936" /># Aromatic-plants
+# Aromatic-plants
 查看文件 ls -lh
 切换文件 cd ~
 建立文件 mkdir 文件夹名 或者 mkdir -p data/orthofinder/Lilium_regale
@@ -7,33 +7,14 @@
 下载注释文件 wget --user-agent="Mozilla/5.0" "链接地址" -O 保存的文件名
 
 
-
 创建文件夹 → 移动注释文件 → 解压 → 把解压后的文件放到对应物种文件夹：
-# 1. 进入 data 目录
 cd ~/data
-
-# 2. 创建 orthofinder 主目录
 mkdir -p orthofinder
-
-# 3. 在 orthofinder 里面创建物种目录（比如 Lilium_regale）
 mkdir -p orthofinder/Lilium_regale
-
-# 4. 回到主目录（假设你的 lrv2.gff 和 lrv2_mc.fa.gz 在 ~ 下）
 cd ~
-
-# 5. 把下载好的两个文件移动到物种目录里
 mv lrv2.gff lrv2_mc.fa.gz ~/data/orthofinder/Lilium_regale/
-
-# 6. 进入物种目录
 cd ~/data/orthofinder/Lilium_regale/
-
-# 7. 解压 fasta 文件（保留压缩包）
 gunzip -k lrv2_mc.fa.gz
-
-# （如果想删除压缩包直接省空间）
-# gunzip lrv2_mc.fa.gz
-
-
 
 
 运行工作 
