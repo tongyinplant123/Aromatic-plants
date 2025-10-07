@@ -8,6 +8,9 @@
 下载注释文件 wget --user-agent="Mozilla/5.0" "链接地址" -O 保存的文件名
 .fa 或 .fasta 是典型的序列格式，用于存储 DNA / RNA / 蛋白质的核酸或氨基酸序列；
 复制代码：直接按住左键拖动选择要复制的文本，然后松开。选中即自动复制到剪贴板
+查看文件序列如果文件未压缩：head 文件名   eg：head Magnolia_biondii.chr.fa 查看前几列内容
+查看文件如果是压缩文件：zcat 文件名 | head   eg:zcat Magnolia_biondii.chr.fa.gz | head
+
 
 创建文件夹 → 移动注释文件 → 解压 → 把解压后的文件放到对应物种文件夹：
 cd ~/data
