@@ -1,0 +1,35 @@
+将文本上传FZ
+找到文件途径以及需要放置的文件途径
+举例：现在input_10.10.txt它在/data/tongyin/files_txt，但是我需要在/data/tongyin/aromatic_gff里面安装：
+完整代码：while read dir; do mkdir -p "/data/tongyin/aromatic_gff/$dir"; done < /data/tongyin/files_txt/input_10.10.txt
+
+while read dir; do ... done < 文件路径
+→ 从 list.txt 一行一行读取内容；
+mkdir -p "/data/tongyin/aromatic_gff/$dir"
+→ 在目标路径下为每一行创建一个文件夹；
+-p 表示如果上层目录不存在也自动创建（不会报错）
+
+进入服务器的任意目录都行，比如你的 home 目录：
+cd ~
+
+
+可能出现：你看到的这些奇怪的 $'\r' 和单引号问题，其实是 Windows 换行符 导致的！
+
+也就是说——
+你在 Windows（或 FileZilla 从 Windows 上传的）input_10.10.txt 文件中，
+每一行末尾都有一个 回车符 \r，
+Linux 只认 \n（换行），不认 \r，于是把它也当成文件名的一部分了
+
+
+但是我现在已经都建好了，怎么统一删去这些不想要的呢
+
+一键批量修正文件夹名称（推荐）
+
+在你的终端中运行这段命令：
+
+cd /data/tongyin/aromatic_gff/
+for d in *$'\r'; do
+  mv "$d" "$(echo "$d" | tr -d '\r')"
+done
+
+这样就干净了 （嘻嘻）
