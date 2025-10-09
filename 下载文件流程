@@ -1,0 +1,9 @@
+cd data
+cd orthofinder
+cd 植物
+wget --user-agent="Mozilla/5.0" "文件链接" -O 命名
+ls -lh
+gunzip等解压
+cd .. 
+cd 植物
+重复......
