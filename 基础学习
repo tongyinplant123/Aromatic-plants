@@ -56,3 +56,10 @@ ls	列出当前目录下的文件和文件夹	方便确认当前层级
 ./	当前目录下的某个文件	./run.sh	运行当前目录中的脚本
 ../	上一级目录下的某个文件	../data/file.txt	访问上一级目录中的文件
 ~/	home 目录下的某个路径	~/data/orthofinder	不论在哪都能快速回 home 下的路径
+
+
+文件后缀	解压命令
+.gz	    gunzip file.gz 或 gzip -d file.gz
+.zip   	unzip file.zip
+.tar.gz	  tar -xzvf file.tar.gz
+.tar	      tar -xvf file.tar
