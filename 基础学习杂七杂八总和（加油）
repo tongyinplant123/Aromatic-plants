@@ -11,6 +11,11 @@
 查看文件序列如果文件未压缩：head 文件名   eg：head Magnolia_biondii.chr.fa 查看前几列内容
 查看文件如果是压缩文件：zcat 文件名 | head   eg:zcat Magnolia_biondii.chr.fa.gz | head
 
+drwxr-xr-x  4 tongyin  staff   4.0K Oct 11  aromatic_orthofinder/
+-rw-r--r--  1 tongyin  staff   2.3M Oct 11  data.zip
+以 d 开头的（例如 drwxr-xr-x）是 目录（文件夹）
+以 - 开头的（例如 -rw-r--r--）是 文件
+
 
 创建文件夹 → 移动注释文件 → 解压 → 把解压后的文件放到对应物种文件夹：
 cd ~/data
