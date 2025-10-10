@@ -16,6 +16,7 @@ drwxr-xr-x  4 tongyin  staff   4.0K Oct 11  aromatic_orthofinder/
 以 d 开头的（例如 drwxr-xr-x）是 目录（文件夹）
 以 - 开头的（例如 -rw-r--r--）是 文件
 
+检查文件类型：file "Piper_nigrum genome"
 
 创建文件夹 → 移动注释文件 → 解压 → 把解压后的文件放到对应物种文件夹：
 cd ~/data
