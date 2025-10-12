@@ -1,0 +1,129 @@
+(base) tongyin@SunLab:~$ cd data
+(base) tongyin@SunLab:~/data$ ls -lh
+total 16K
+drwxrwxr-x 45 tongyin tongyin 4.0K Oct 10 01:00 aromatic_gff
+drwxrwxr-x 45 tongyin tongyin 4.0K Oct 11 00:26 aromatic_orthofinder
+drwxrwxr-x  3 tongyin tongyin 4.0K Aug 30 16:33 fangxiang_plant
+drwxrwxr-x  2 tongyin tongyin 4.0K Oct 10 00:47 files_txt
+(base) tongyin@SunLab:~/data$ cd aromatic_orthofinder
+(base) tongyin@SunLab:~/data/aromatic_orthofinder$ cdHamamelis_virginiana
+cdHamamelis_virginiana: command not found
+(base) tongyin@SunLab:~/data/aromatic_orthofinder$ cd Hamamelis_virginiana
+(base) tongyin@SunLab:~/data/aromatic_orthofinder/Hamamelis_virginiana$ ls -lh
+total 0
+(base) tongyin@SunLab:~/data/aromatic_orthofinder/Hamamelis_virginiana$ conda env list
+# conda environments:
+#
+base                  *  /home/tongyin/miniconda3
+aromatic                 /home/tongyin/miniconda3/envs/aromatic
+                         /home/yuxuan/anaconda3/envs/fangxiang_plant
+
+(base) tongyin@SunLab:~/data/aromatic_orthofinder/Hamamelis_virginiana$ conda activate aromatic
+(aromatic) tongyin@SunLab:~/data/aromatic_orthofinder/Hamamelis_virginiana$ ls -lh
+total 1008M
+-rw-rw-r-- 1 tongyin tongyin 889M Oct 12 19:36 Hvir_nuclei_sn_run2_2_pseudohap_mskd.smplchr.fa
+-rw-rw-r-- 1 tongyin tongyin 119M Oct 12 19:35 Hvir-UTRme_v1-3-best-score_cleanUTRs_v2.gff
+(aromatic) tongyin@SunLab:~/data/aromatic_orthofinder/Hamamelis_virginiana$ ^C^C
+(aromatic) tongyin@SunLab:~/data/aromatic_orthofinder/Hamamelis_virginiana$ ^C
+(aromatic) tongyin@SunLab:~/data/aromatic_orthofinder/Hamamelis_virginiana$ gffread Hvir-UTRme_v1-3-best-score_cleanUTRs_v2.gff -g Hvir_nuclei_sn_run2_2_pseudohap_mskd.smplchr.fa -x Hamamelis_virginiana_cds.fa -y Hamamelis_virginiana_proteins.fa
+FASTA index file Hvir_nuclei_sn_run2_2_pseudohap_mskd.smplchr.fa.fai created.
+(aromatic) tongyin@SunLab:~/data/aromatic_orthofinder/Hamamelis_virginiana$ ls -lh
+total 1.3G
+-rw-rw-r-- 1 tongyin tongyin 164M Oct 12 19:44 Hamamelis_virginiana_cds.fa
+-rw-rw-r-- 1 tongyin tongyin  56M Oct 12 19:44 Hamamelis_virginiana_proteins.fa
+-rw-rw-r-- 1 tongyin tongyin 889M Oct 12 19:36 Hvir_nuclei_sn_run2_2_pseudohap_mskd.smplchr.fa
+-rw-rw-r-- 1 tongyin tongyin 7.7M Oct 12 19:44 Hvir_nuclei_sn_run2_2_pseudohap_mskd.smplchr.fa.fai
+-rw-rw-r-- 1 tongyin tongyin 119M Oct 12 19:35 Hvir-UTRme_v1-3-best-score_cleanUTRs_v2.gff
+(aromatic) tongyin@SunLab:~/data/aromatic_orthofinder/Hamamelis_virginiana$ conda install -c bioconda seqkit
+Retrieving notices: ...working... done
+Channels:
+ - bioconda
+ - conda-forge
+ - yuxuanliu
+Platform: linux-64
+Collecting package metadata (repodata.json): done
+Solving environment: done
+
+## Package Plan ##
+
+  environment location: /home/tongyin/miniconda3/envs/aromatic
+
+  added / updated specs:
+    - seqkit
+
+
+The following packages will be downloaded:
+
+    package                    |            build
+    ---------------------------|-----------------
+    ca-certificates-2025.10.5  |       hbd8a1cb_0         152 KB  conda-forge
+    hybsuite-1.1.5             |           py39_0        11.1 MB  yuxuanliu
+    openssl-3.5.4              |       h26f9b46_0         3.0 MB  conda-forge
+    seqkit-2.10.1              |       he881be0_0        11.8 MB  bioconda
+    ------------------------------------------------------------
+                                           Total:        26.0 MB
+
+The following NEW packages will be INSTALLED:
+
+  seqkit             bioconda/linux-64::seqkit-2.10.1-he881be0_0
+
+The following packages will be UPDATED:
+
+  ca-certificates                       2025.8.3-hbd8a1cb_0 --> 2025.10.5-hbd8a1cb_0
+  hybsuite                                     1.1.2-py39_0 --> 1.1.5-py39_0
+  openssl                                  3.5.3-h26f9b46_1 --> 3.5.4-h26f9b46_0
+
+
+Proceed ([y]/n)? y
+
+
+Downloading and Extracting Packages:
+
+Preparing transaction: done
+Verifying transaction: done
+Executing transaction: done
+(aromatic) tongyin@SunLab:~/data/aromatic_orthofinder/Hamamelis_virginiana$ ^C
+(aromatic) tongyin@SunLab:~/data/aromatic_orthofinder/Hamamelis_virginiana$ seqkit stats Hamamelis_virginiana_proteins.fa
+file                              format  type     num_seqs     sum_len  min_len  avg_len  max_len
+Hamamelis_virginiana_proteins.fa  FASTA   Protein   151,060  55,579,429        6    367.9    5,042
+(aromatic) tongyin@SunLab:~/data/aromatic_orthofinder/Hamamelis_virginiana$ seqkit stats Hamamelis_virginiana_cds.fa
+file                         format  type  num_seqs      sum_len  min_len  avg_len  max_len
+Hamamelis_virginiana_cds.fa  FASTA   DNA    151,060  167,163,556       18  1,106.6   15,129
+(aromatic) tongyin@SunLab:~/data/aromatic_orthofinder/Hamamelis_virginiana$ head Hamamelis_virginiana_proteins.fa
+>g19413.t1
+MFKKAVEAKSLQRLSGADRKKLKRTIKEKFRIASDADIDALLPPKAEITVAKFQNRVHVYAVEGGFPMFF
+DIDGRGTDIFPTGLKVGGRWHGFKEHRLVLVWLALIGVGMAI
+>g19414.t1
+MLEELKASDSLPMKLYCDNKAAISIAHNPVLHDRTKHVEVDKHFIKEKLDSGLICMPYIPTTEQIADVFT
+KGLHKKQFEVLMGKLTMEDIFKPA
+>g19415.t1
+MSDVSIESTIVPPTSSTANPSKGNGTNSESHSVQITTIRLNGDNFLRWSQSVRMYIRGRGKMGYLTGEKT
+APAENDPAYATWDAENSMVMTWLVNSMEEDICSNYMCYPTAQELWENVNQMYSDLGNQSQIFELTLKLGE
+MRQGDDSVTKYFNSLKRVWQDLDLFNTYEWKSVEDSRHHKKIVEDNRIFKFLAGLNIEFDEVRGRIIGRQ
+(aromatic) tongyin@SunLab:~/data/aromatic_orthofinder/Hamamelis_virginiana$ head Hamamelis_virginiana_cds.fa
+>g19413.t1
+ATGTTCAAGAAGGCAGTAGAGGCAAAATCACTGCAGAGATTGTCAGGTGCTGATAGGAAGAAGCTGAAAA
+GAACCATCAAAGAAAAGTTTCGGATTGCTTCCGATGCCGATATCGACGCCTTACTTCCTCCCAAGGCAGA
+GATCACAGTTGCAAAGTTCCAAAATCGAGTCCATGTATATGCTGTAGAAGGTGGTTTTCCTATGTTTTTT
+GATATTGATGGGCGAGGCACAGATATATTCCCCACAGGGCTGAAGGTAGGTGGTCGGTGGCATGGTTTTA
+AGGAACATAGATTGGTCTTGGTATGGCTGGCCTTAATAGGAGTTGGTATGGCAATATGA
+>g19414.t1
+ATGTTAGAAGAGTTGAAGGCTTCAGATTCGCTACCCATGAAGTTATACTGCGATAATAAGGCAGCAATTT
+CAATCGCTCATAATCCAGTTCTACATGACAGAACAAAACATGTAGAAGTGGATAAACACTTTATCAAGGA
+AAAACTTGACAGTGGGTTGATATGTATGCCATACATCCCAACTACAGAACAGATTGCTGATGTATTTACT
+(aromatic) tongyin@SunLab:~/data/aromatic_orthofinder/Hamamelis_virginiana$ # 检查是否有空序列
+(aromatic) tongyin@SunLab:~/data/aromatic_orthofinder/Hamamelis_virginiana$ seqkit fx2tab Hamamelis_virginiana_proteins.fa | awk '{if(length($2)==0) print $1}'
+(aromatic) tongyin@SunLab:~/data/aromatic_orthofinder/Hamamelis_virginiana$ seqkit fx2tab Hamamelis_virginiana_cds.fa | awk '{if(length($2)==0) print $1}'
+(aromatic) tongyin@SunLab:~/data/aromatic_orthofinder/Hamamelis_virginiana$
+(aromatic) tongyin@SunLab:~/data/aromatic_orthofinder/Hamamelis_virginiana$ # 检查是否有重复ID
+(aromatic) tongyin@SunLab:~/data/aromatic_orthofinder/Hamamelis_virginiana$ seqkit seq -n Hamamelis_virginiana_proteins.fa | sort | uniq -d | head
+(aromatic) tongyin@SunLab:~/data/aromatic_orthofinder/Hamamelis_virginiana$ seqkit seq -n Hamamelis_virginiana_cds.fa | sort | uniq -d | head
+(aromatic) tongyin@SunLab:~/data/aromatic_orthofinder/Hamamelis_virginiana$ ^C
+(aromatic) tongyin@SunLab:~/data/aromatic_orthofinder/Hamamelis_virginiana$ ^C
+(aromatic) tongyin@SunLab:~/data/aromatic_orthofinder/Hamamelis_virginiana$ ls -lh
+total 1.3G
+-rw-rw-r-- 1 tongyin tongyin 164M Oct 12 19:44 Hamamelis_virginiana_cds.fa
+-rw-rw-r-- 1 tongyin tongyin  56M Oct 12 19:44 Hamamelis_virginiana_proteins.fa
+-rw-rw-r-- 1 tongyin tongyin 889M Oct 12 19:36 Hvir_nuclei_sn_run2_2_pseudohap_mskd.smplchr.fa
+-rw-rw-r-- 1 tongyin tongyin 7.7M Oct 12 19:44 Hvir_nuclei_sn_run2_2_pseudohap_mskd.smplchr.fa.fai
+-rw-rw-r-- 1 tongyin tongyin 119M Oct 12 19:35 Hvir-UTRme_v1-3-best-score_cleanUTRs_v2.gff
