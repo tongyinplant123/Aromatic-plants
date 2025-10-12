@@ -4,6 +4,7 @@
 建立文件 mkdir 文件夹名 或者 mkdir -p data/orthofinder/Lilium_regale
 删除文件、目录文件 rm -r 文件名
 解压文件 gunzip 文件名.gz
+修改文件名： mv "原文件名" "新文件名"
 数文件个数 ls -1 | wc -l
 下载注释文件 wget --user-agent="Mozilla/5.0" "链接地址" -O 保存的文件名
 .fa 或 .fasta 是典型的序列格式，用于存储 DNA / RNA / 蛋白质的核酸或氨基酸序列；
@@ -69,3 +70,6 @@ ls	列出当前目录下的文件和文件夹	方便确认当前层级
 .zip   	unzip file.zip
 .tar.gz	  tar -xzvf file.tar.gz
 .tar	      tar -xvf file.tar
+
+head
+head -n 10 文件名     查看前十行
