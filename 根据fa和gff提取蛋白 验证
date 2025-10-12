@@ -1,0 +1,44 @@
+(aromatic) tongyin@SunLab:~/data/aromatic_orthofinder/Hamamelis_virginiana$ seqkit stats Hamamelis_virginiana_proteins.fa
+file                              format  type     num_seqs     sum_len  min_len  avg_len  max_len
+Hamamelis_virginiana_proteins.fa  FASTA   Protein   151,060  55,579,429        6    367.9    5,042
+(aromatic) tongyin@SunLab:~/data/aromatic_orthofinder/Hamamelis_virginiana$ seqkit stats Hamamelis_virginiana_cds.fa
+file                         format  type  num_seqs      sum_len  min_len  avg_len  max_len
+Hamamelis_virginiana_cds.fa  FASTA   DNA    151,060  167,163,556       18  1,106.6   15,129
+(aromatic) tongyin@SunLab:~/data/aromatic_orthofinder/Hamamelis_virginiana$ head Hamamelis_virginiana_proteins.fa
+>g19413.t1
+MFKKAVEAKSLQRLSGADRKKLKRTIKEKFRIASDADIDALLPPKAEITVAKFQNRVHVYAVEGGFPMFF
+DIDGRGTDIFPTGLKVGGRWHGFKEHRLVLVWLALIGVGMAI
+>g19414.t1
+MLEELKASDSLPMKLYCDNKAAISIAHNPVLHDRTKHVEVDKHFIKEKLDSGLICMPYIPTTEQIADVFT
+KGLHKKQFEVLMGKLTMEDIFKPA
+>g19415.t1
+MSDVSIESTIVPPTSSTANPSKGNGTNSESHSVQITTIRLNGDNFLRWSQSVRMYIRGRGKMGYLTGEKT
+APAENDPAYATWDAENSMVMTWLVNSMEEDICSNYMCYPTAQELWENVNQMYSDLGNQSQIFELTLKLGE
+MRQGDDSVTKYFNSLKRVWQDLDLFNTYEWKSVEDSRHHKKIVEDNRIFKFLAGLNIEFDEVRGRIIGRQ
+(aromatic) tongyin@SunLab:~/data/aromatic_orthofinder/Hamamelis_virginiana$ head Hamamelis_virginiana_cds.fa
+>g19413.t1
+ATGTTCAAGAAGGCAGTAGAGGCAAAATCACTGCAGAGATTGTCAGGTGCTGATAGGAAGAAGCTGAAAA
+GAACCATCAAAGAAAAGTTTCGGATTGCTTCCGATGCCGATATCGACGCCTTACTTCCTCCCAAGGCAGA
+GATCACAGTTGCAAAGTTCCAAAATCGAGTCCATGTATATGCTGTAGAAGGTGGTTTTCCTATGTTTTTT
+GATATTGATGGGCGAGGCACAGATATATTCCCCACAGGGCTGAAGGTAGGTGGTCGGTGGCATGGTTTTA
+AGGAACATAGATTGGTCTTGGTATGGCTGGCCTTAATAGGAGTTGGTATGGCAATATGA
+>g19414.t1
+ATGTTAGAAGAGTTGAAGGCTTCAGATTCGCTACCCATGAAGTTATACTGCGATAATAAGGCAGCAATTT
+CAATCGCTCATAATCCAGTTCTACATGACAGAACAAAACATGTAGAAGTGGATAAACACTTTATCAAGGA
+AAAACTTGACAGTGGGTTGATATGTATGCCATACATCCCAACTACAGAACAGATTGCTGATGTATTTACT
+(aromatic) tongyin@SunLab:~/data/aromatic_orthofinder/Hamamelis_virginiana$ # 检查是否有空序列
+(aromatic) tongyin@SunLab:~/data/aromatic_orthofinder/Hamamelis_virginiana$ seqkit fx2tab Hamamelis_virginiana_proteins.fa | awk '{if(length($2)==0) print $1}'
+(aromatic) tongyin@SunLab:~/data/aromatic_orthofinder/Hamamelis_virginiana$ seqkit fx2tab Hamamelis_virginiana_cds.fa | awk '{if(length($2)==0) print $1}'
+(aromatic) tongyin@SunLab:~/data/aromatic_orthofinder/Hamamelis_virginiana$
+(aromatic) tongyin@SunLab:~/data/aromatic_orthofinder/Hamamelis_virginiana$ # 检查是否有重复ID
+(aromatic) tongyin@SunLab:~/data/aromatic_orthofinder/Hamamelis_virginiana$ seqkit seq -n Hamamelis_virginiana_proteins.fa | sort | uniq -d | head
+(aromatic) tongyin@SunLab:~/data/aromatic_orthofinder/Hamamelis_virginiana$ seqkit seq -n Hamamelis_virginiana_cds.fa | sort | uniq -d | head
+
+没有空序列（每条都有内容 👍）
+
+没有重复 ID（每条基因只出现一次 🔥）
+
+
+
+
+
