@@ -1,0 +1,25 @@
+如果文件本身超过1g，则需要拆分成两个
+查看有多少序列：seqkit stats Cinnamomum.burmami.chr.v2.0.toplevel.fa
+拆分成了两个文件：seqkit split -p 2 Cinnamomum.burmami.chr.v2.0.toplevel.fa
+  
+例子：
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ seqkit stats Cinnamomum.burmami.chr.v2.0.toplevel.fa
+file                                     format  type  num_seqs        sum_len  min_len       avg_len      max_len
+Cinnamomum.burmami.chr.v2.0.toplevel.fa  FASTA   DNA         76  1,132,685,329  101,228  14,903,754.3  140,537,727
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ ^C
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ seqkit split -p 2 Cinnamomum.burmami.chr.v2.0.toplevel.fa
+[INFO] split into 2 parts
+[INFO] read sequences ...
+[INFO] read 76 sequences
+[INFO] write 38 sequences to file: Cinnamomum.burmami.chr.v2.0.toplevel.fa.split/Cinnamomum.burmami.chr.v2.0.toplevel.part_001.fa
+[INFO] write 38 sequences to file: Cinnamomum.burmami.chr.v2.0.toplevel.fa.split/Cinnamomum.burmami.chr.v2.0.toplevel.part_002.fa
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ ls -lh
+total 1.1G
+-rw-rw-r-- 1 tongyin tongyin 1.1G Nov 10  2023 Cinnamomum.burmami.chr.v2.0.toplevel.fa
+drwxr-xr-x 2 tongyin tongyin 4.0K Oct 20 21:02 Cinnamomum.burmami.chr.v2.0.toplevel.fa.split
+
+分别运行Helixer，得到两个GFF文件。
+将两个GFF文件合并成一个文件。
+使用工具（如AGAT、gff3tool等）对合并的GFF文件进行排序和索引。
+
+
