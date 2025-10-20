@@ -1,4 +1,6 @@
 如果文件本身超过1g，则需要拆分成两个
+
+法一：
 查看有多少序列：seqkit stats Cinnamomum.burmami.chr.v2.0.toplevel.fa
 拆分成了两个文件：seqkit split -p 2 Cinnamomum.burmami.chr.v2.0.toplevel.fa
   
@@ -22,4 +24,88 @@ drwxr-xr-x 2 tongyin tongyin 4.0K Oct 20 21:02 Cinnamomum.burmami.chr.v2.0.tople
 将两个GFF文件合并成一个文件。
 使用工具（如AGAT、gff3tool等）对合并的GFF文件进行排序和索引。
 
+
+
+
+法二：
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ seqkit fx2tab -n -l Cinnamomum.burmami.chr.v2.0.toplevel.fa | sort -k2,2nr > sorted_lengths.txt
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ awk '
+> BEGIN { group1_total=0; group2_total=0 }
+> {
+>     if (group1_total <= group2_total) {
+>         print $1 > "group1_list.txt"
+>         group1_total += $2
+>     } else {
+>         print $1 > "group2_list.txt"
+>         group2_total += $2
+>     }
+> }
+> ' sorted_lengths.txt
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ seqkit grep -f group1_list.txt Cinnamomum.burmami.chr.v2.0.toplevel.fa > group1.fa
+[INFO] 39 patterns loaded from file
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ seqkit grep -f group2_list.txt Cinnamomum.burmami.chr.v2.0.toplevel.fa > group2.fa
+[INFO] 37 patterns loaded from file
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ echo "=== 真正均衡的分组结果 ==="
+=== 真正均衡的分组结果 ===
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ echo "分组1: $(grep -c '>' group1.fa) 条序列, 大小: $(ls -lh group1.fa | awk '{print $5}')"
+分组1: 39 条序列, 大小: 550M
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ echo "分组2: $(grep -c '>' group2.fa) 条序列, 大小: $(ls -lh group2.fa | awk '{print $5}')"
+分组2: 37 条序列, 大小: 550M
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ echo "=== 分组详情 ==="
+=== 分组详情 ===
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ seqkit fx2tab -n -l group1.fa | awk '{sum+=$2} END {print "分组1总长度: " sum}'
+分组1总长度: 566292071
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ seqkit fx2tab -n -l group2.fa | awk '{sum+=$2} END {print "分组2总长度: " sum}'
+分组2总长度: 566393258
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ ls -lh
+total 2.2G
+-rw-rw-r-- 1 tongyin tongyin 1.1G Nov 10  2023 Cinnamomum.burmami.chr.v2.0.toplevel.fa
+-rw-rw-r-- 1 tongyin tongyin 550M Oct 21 00:53 group1.fa
+-rw-rw-r-- 1 tongyin tongyin  588 Oct 21 00:53 group1_list.txt
+-rw-rw-r-- 1 tongyin tongyin 550M Oct 21 00:53 group2.fa
+-rw-rw-r-- 1 tongyin tongyin  553 Oct 21 00:53 group2_list.txt
+-rw-rw-r-- 1 tongyin tongyin 1.7K Oct 21 00:53 sorted_lengths.txt
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$
+
+
+法二方法原理：不再简单按序列数量分，而是按序列总长度分
+智能分配：总是把下一个序列分配给当前总长度较小的组
+长短搭配：确保大染色体和小scaffolds均匀分布
+
+# 回到目录
+cd ~/data/aromatic_gff/Cinnamomum_burmanni
+
+# 删除之前的文件
+rm -f group1.fa group2.fa group1_list.txt group2_list.txt
+
+# 步骤1：获取序列长度并排序
+seqkit fx2tab -n -l Cinnamomum.burmami.chr.v2.0.toplevel.fa | sort -k2,2nr > sorted_lengths.txt
+
+# 步骤2：智能分组 - 长序列和短序列搭配分配
+awk '
+BEGIN { group1_total=0; group2_total=0 }
+{
+    if (group1_total <= group2_total) {
+        print $1 > "group1_list.txt"
+        group1_total += $2
+    } else {
+        print $1 > "group2_list.txt" 
+        group2_total += $2
+    }
+}
+' sorted_lengths.txt
+
+# 步骤3：根据列表提取序列
+seqkit grep -f group1_list.txt Cinnamomum.burmami.chr.v2.0.toplevel.fa > group1.fa
+seqkit grep -f group2_list.txt Cinnamomum.burmami.chr.v2.0.toplevel.fa > group2.fa
+
+# 步骤4：验证结果
+echo "=== 真正均衡的分组结果 ==="
+echo "分组1: $(grep -c '>' group1.fa) 条序列, 大小: $(ls -lh group1.fa | awk '{print $5}')"
+echo "分组2: $(grep -c '>' group2.fa) 条序列, 大小: $(ls -lh group2.fa | awk '{print $5}')"
+
+# 显示分组详情
+echo "=== 分组详情 ==="
+seqkit fx2tab -n -l group1.fa | awk '{sum+=$2} END {print "分组1总长度: " sum}'
+seqkit fx2tab -n -l group2.fa | awk '{sum+=$2} END {print "分组2总长度: " sum}'
 
