@@ -27,7 +27,7 @@ drwxr-xr-x 2 tongyin tongyin 4.0K Oct 20 21:02 Cinnamomum.burmami.chr.v2.0.tople
 
 
 
-法二：
+法二（比较有用）：
 (base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ seqkit fx2tab -n -l Cinnamomum.burmami.chr.v2.0.toplevel.fa | sort -k2,2nr > sorted_lengths.txt
 (base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ awk '
 > BEGIN { group1_total=0; group2_total=0 }
@@ -109,3 +109,39 @@ echo "=== 分组详情 ==="
 seqkit fx2tab -n -l group1.fa | awk '{sum+=$2} END {print "分组1总长度: " sum}'
 seqkit fx2tab -n -l group2.fa | awk '{sum+=$2} END {print "分组2总长度: " sum}'
 
+
+
+完整性检查方法
+1. 验证序列完整性
+bash
+# 检查所有原始序列是否都在拆分结果中
+original_count=$(seqkit seq -n Cinnamomum.burmami.chr.v2.0.toplevel.fa | wc -l)
+split_count=$(( $(seqkit seq -n group1.fa | wc -l) + $(seqkit seq -n group2.fa | wc -l) ))
+
+echo "原始序列数: $original_count"
+echo "拆分后序列数: $split_count"
+echo "是否匹配: $([ $original_count -eq $split_count ] && echo "是" || echo "否")"
+2. 检查序列内容完整性
+bash
+# 随机抽查几条序列验证内容完整性
+echo "=== 随机抽查序列 ==="
+seqkit seq -n Cinnamomum.burmami.chr.v2.0.toplevel.fa | head -3 | while read seq_name; do
+    echo "检查序列: $seq_name"
+    original_length=$(seqkit grep -n -p "^$seq_name$" Cinnamomum.burmami.chr.v2.0.toplevel.fa | seqkit stats -a | awk 'NR==2{print $4}')
+    split_length=$(seqkit grep -n -p "^$seq_name$" group1.fa group2.fa 2>/dev/null | seqkit stats -a | awk 'NR==2{print $4}')
+    echo "  原始长度: $original_length, 拆分后长度: $split_length"
+    echo "  是否一致: $([ "$original_length" = "$split_length" ] && echo "是" || echo "否")"
+done
+3. 最终验证命令
+bash
+# 一键完成所有验证
+echo "=== 最终完整性验证 ==="
+echo "1. 序列数量验证:"
+original_seqs=$(seqkit seq -n Cinnamomum.burmami.chr.v2.0.toplevel.fa | sort)
+split_seqs=$(cat <(seqkit seq -n group1.fa) <(seqkit seq -n group2.fa) | sort)
+echo "  序列是否一致: $([ "$original_seqs" = "$split_seqs" ] && echo "✓ 完全一致" || echo "✗ 不一致")"
+
+echo "2. 文件完整性验证:"
+md5_original=$(seqkit seq -s Cinnamomum.burmami.chr.v2.0.toplevel.fa | md5sum)
+md5_split=$(cat <(seqkit seq -s group1.fa) <(seqkit seq -s group2.fa) | md5sum)
+echo "  序列内容MD5是否一致: $([ "$md5_original" = "$md5_split" ] && echo "✓ 完全一致" || echo "✗ 不一致")"
