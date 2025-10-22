@@ -259,3 +259,36 @@ total 2.3G
 drwxrwxr-x 2 tongyin tongyin 4.0K Oct 21 19:44 第一次尝试
 drwxrwxr-x 2 tongyin tongyin 4.0K Oct 23 01:12 第二次尝试（最终）
 (base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$
+
+六、如果一直到最后才合并蛋白
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ conda activate aromatic
+(aromatic) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ gffread chr1_helixer.gff -g Cinnamomum.burmami.part1_chr1-6.fa -x Cinnamomum.burmami_protein_part1.fasta
+FASTA index file Cinnamomum.burmami.part1_chr1-6.fa.fai created.
+(aromatic) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ ls -lh
+total 2.3G
+-rw-rw-r-- 1 tongyin tongyin  36M Oct 23 00:33 chr1_helixer.gff
+-rw-rw-r-- 1 tongyin tongyin  24M Oct 23 00:32 chr2_helixer.gff
+-rw-rw-r-- 1 tongyin tongyin 1.1G Nov 10  2023 Cinnamomum.burmami.chr.v2.0.toplevel.fa
+-rw-rw-r-- 1 tongyin tongyin  60M Oct 23 00:39 Cinnamomum.burmami.helixer_full.gff
+-rw-rw-r-- 1 tongyin tongyin 637M Oct 22 17:31 Cinnamomum.burmami.part1_chr1-6.fa
+-rw-rw-r-- 1 tongyin tongyin  256 Oct 23 01:32 Cinnamomum.burmami.part1_chr1-6.fa.fai
+-rw-rw-r-- 1 tongyin tongyin 444M Oct 22 17:31 Cinnamomum.burmami.part2_rest.fa
+-rw-rw-r-- 1 tongyin tongyin  29M Oct 23 01:32 Cinnamomum.burmami_protein_part1.fasta
+-rw-rw-r-- 1 tongyin tongyin 1.2K Oct 23 00:54 fa_seq_list.txt
+-rw-rw-r-- 1 tongyin tongyin  584 Oct 23 01:14 gff_seq_list.txt
+-rw-rw-r-- 1 tongyin tongyin  557 Oct 23 01:14 missing_in_gff.txt
+drwxrwxr-x 2 tongyin tongyin 4.0K Oct 21 19:44 第一次尝试
+drwxrwxr-x 2 tongyin tongyin 4.0K Oct 23 01:32 第二次尝试（最终）
+(aromatic) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ gffread chr2_helixer.gff -g Cinnamomum.burmami.part2_rest.fa -x Cinnamomum.burmami_protein_part2.fasta
+FASTA index file Cinnamomum.burmami.part2_rest.fa.fai created.
+(aromatic) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ cat Cinnamomum.burmami_protein_part1.fasta Cinnamomum.burmami_protein_part2.fasta > Cinnamomum.burmami_protein_full.fasta
+(aromatic) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ grep ">" Cinnamomum.burmami_protein_full.fasta | wc -l
+39283
+(aromatic) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ head Cinnamomum.burmami_protein_full.fasta
+>chr1_Chr1_000001.1
+ATGGTGAGAAAGCCAAGCATGGGTCGACAGAAGATAGAGATTAAGAAGATAGAGAACGAGGATTCACGTC
+AGGTCTGCTTCTCTAAGCGCCGTGCAGGCCTCTTCAAGAAGGCCAACGAGCTCTGCATCCTCTGTGGCGC
+TGAGATTGCCATCATCTTCTTCTCCCCCGCCGGCAAGGCTTTCTCCTTTGGCCACCCATGCGTTGATACC
+ATCATCGACCGCTTTCTCACCTCCTCTACCACAGCAATCCTTGACGTTTCCTCAAACGACCGCCACCGGG
+
+七、busco检验
