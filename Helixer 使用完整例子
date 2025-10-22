@@ -1,0 +1,127 @@
+一、先拆分并检查：
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ awk 'BEGIN{seq=0;out1="Cinnamomum.burmami.part1_chr1-6.fa";out2="Cinnamomum.burmami.part2_rest.fa"}
+>      /^>/{seq++}
+>      {
+>          if (seq<=6)
+>              print >> out1;
+>          else
+>              print >> out2;
+>      }' Cinnamomum.burmami.chr.v2.0.toplevel.fa
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ ls -lh
+total 2.2G
+-rw-rw-r-- 1 tongyin tongyin 1.1G Nov 10  2023 Cinnamomum.burmami.chr.v2.0.toplevel.fa
+-rw-rw-r-- 1 tongyin tongyin 637M Oct 22 17:31 Cinnamomum.burmami.part1_chr1-6.fa
+-rw-rw-r-- 1 tongyin tongyin 444M Oct 22 17:31 Cinnamomum.burmami.part2_rest.fa
+drwxrwxr-x 2 tongyin tongyin 4.0K Oct 21 19:44 第一次尝试
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ grep "^>" Cinnamomum.burmami.part1_chr1-6.fa | head
+>Chr1
+>Chr2
+>Chr3
+>Chr4
+>Chr5
+>Chr6
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ grep "^>" Cinnamomum.burmami.part2_rest.fa | head
+>Chr7
+>Chr8
+>Chr9
+>Chr10
+>Chr11
+>Chr12
+>HiC_scaffold_14
+>HiC_scaffold_15
+>HiC_scaffold_16
+>HiC_scaffold_17
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ grep "^>" Cinnamomum.burmami.part2_rest.fa | head
+>Chr7
+>Chr8
+>Chr9
+>Chr10
+>Chr11
+>Chr12
+>HiC_scaffold_14
+>HiC_scaffold_15
+>HiC_scaffold_16
+>HiC_scaffold_17
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ grep "^>" Cinnamomum.burmami.part2_rest.fa
+>Chr7
+>Chr8
+>Chr9
+>Chr10
+>Chr11
+>Chr12
+>HiC_scaffold_14
+>HiC_scaffold_15
+>HiC_scaffold_16
+>HiC_scaffold_17
+>HiC_scaffold_18
+>HiC_scaffold_20
+>HiC_scaffold_21
+>HiC_scaffold_22
+>HiC_scaffold_24
+>HiC_scaffold_99
+>HiC_scaffold_125
+>HiC_scaffold_126
+>HiC_scaffold_128
+>HiC_scaffold_131
+>HiC_scaffold_133
+>HiC_scaffold_136
+>HiC_scaffold_137
+>HiC_scaffold_139
+>HiC_scaffold_140
+>HiC_scaffold_143
+>HiC_scaffold_144
+>HiC_scaffold_145
+>HiC_scaffold_149
+>HiC_scaffold_150
+>HiC_scaffold_154
+>HiC_scaffold_155
+>HiC_scaffold_160
+>HiC_scaffold_161
+>HiC_scaffold_165
+>HiC_scaffold_169
+>HiC_scaffold_172
+>HiC_scaffold_177
+>HiC_scaffold_180
+>HiC_scaffold_188
+>HiC_scaffold_190
+>HiC_scaffold_192
+>HiC_scaffold_193
+>HiC_scaffold_204
+>HiC_scaffold_205
+>HiC_scaffold_208
+>HiC_scaffold_211
+>HiC_scaffold_214
+>HiC_scaffold_221
+>HiC_scaffold_222
+>HiC_scaffold_223
+>HiC_scaffold_224
+>HiC_scaffold_225
+>HiC_scaffold_232
+>HiC_scaffold_233
+>HiC_scaffold_234
+>HiC_scaffold_235
+>HiC_scaffold_272
+>HiC_scaffold_285
+>HiC_scaffold_374
+>HiC_scaffold_375
+>HiC_scaffold_377
+>HiC_scaffold_378
+>HiC_scaffold_417
+>HiC_scaffold_424
+>HiC_scaffold_430
+>HiC_scaffold_432
+>HiC_scaffold_439
+>HiC_scaffold_444
+>HiC_scaffold_450
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ grep -c '^>' Cinnamomum.burmami.part1_chr1-6.fa
+6
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ grep -c '^>' Cinnamomum.burmami.part2_rest.fa
+70
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ grep -c '^>' Cinnamomum.burmami.part2_rest.fa
+70
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ grep -c '^>' Cinnamomum.burmami.chr.v2.0.toplevel.fa
+76
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$
+
+
+二、提取
