@@ -1,0 +1,38 @@
+自动识别出前 6 条染色体并保存为一个文件，剩余所有（包括第7–12条染色体 + 所有 scaffold）保存到第二个文件
+  # ================================
+# 自动将前6条序列写入 part1，其余写入 part2
+# 文件名：Cinnamomum.burmami.chr.v2.0.toplevel.fa
+# 结果：两个文件
+#   ├── Cinnamomum.burmami.part1_chr1-6.fa
+#   └── Cinnamomum.burmami.part2_rest.fa
+# ================================
+
+  
+# 清除旧文件（防止追加）
+rm -f Cinnamomum.burmami.part1_chr1-6.fa Cinnamomum.burmami.part2_rest.fa
+
+# 分割执行
+awk 'BEGIN{seq=0;out1="Cinnamomum.burmami.part1_chr1-6.fa";out2="Cinnamomum.burmami.part2_rest.fa"}
+     /^>/{seq++}
+     {
+         if (seq<=6)
+             print >> out1;
+         else
+             print >> out2;
+     }' Cinnamomum.burmami.chr.v2.0.toplevel.fa
+
+# 检查结果
+echo "前6条序列数量：$(grep -c '^>' Cinnamomum.burmami.part1_chr1-6.fa)"
+echo "剩余序列数量：$(grep -c '^>' Cinnamomum.burmami.part2_rest.fa)"
+echo "✅ 已完成分割！"
+
+  # 查看两个新文件的前几行header
+grep "^>" Cinnamomum.burmami.part1_chr1-6.fa | head
+grep "^>" Cinnamomum.burmami.part2_rest.fa | head
+
+# grep -c '^>' 会统计以 “>” 开头的行数，也就是 FASTA 里每个序列的 header 数。
+输出结果就是该文件中染色体/支架的总数量。
+grep -c '^>' Cinnamomum.burmami.part1_chr1-6.fa
+grep -c '^>' Cinnamomum.burmami.part2_rest.fa
+
+  
