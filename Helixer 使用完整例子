@@ -125,3 +125,63 @@ drwxrwxr-x 2 tongyin tongyin 4.0K Oct 21 19:44 第一次尝试
 
 
 二、提取
+三、通过FZ传输到服务器
+四、合并为最终gff3
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ ls -lh
+total 2.2G
+-rw-rw-r-- 1 tongyin tongyin  36M Oct 23 00:33 chr1_helixer.gff
+-rw-rw-r-- 1 tongyin tongyin  24M Oct 23 00:32 chr2_helixer.gff
+-rw-rw-r-- 1 tongyin tongyin 1.1G Nov 10  2023 Cinnamomum.burmami.chr.v2.0.toplevel.fa
+-rw-rw-r-- 1 tongyin tongyin 637M Oct 22 17:31 Cinnamomum.burmami.part1_chr1-6.fa
+-rw-rw-r-- 1 tongyin tongyin 444M Oct 22 17:31 Cinnamomum.burmami.part2_rest.fa
+drwxrwxr-x 2 tongyin tongyin 4.0K Oct 21 19:44 第一次尝试
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ ^C
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ cat chr1_helixer.gff chr2_helixer.gff > Cinnamomum.burmami.helixer_full.gff
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ ls -lh
+total 2.3G
+-rw-rw-r-- 1 tongyin tongyin  36M Oct 23 00:33 chr1_helixer.gff
+-rw-rw-r-- 1 tongyin tongyin  24M Oct 23 00:32 chr2_helixer.gff
+-rw-rw-r-- 1 tongyin tongyin 1.1G Nov 10  2023 Cinnamomum.burmami.chr.v2.0.toplevel.fa
+-rw-rw-r-- 1 tongyin tongyin  60M Oct 23 00:37 Cinnamomum.burmami.helixer_full.gff
+-rw-rw-r-- 1 tongyin tongyin 637M Oct 22 17:31 Cinnamomum.burmami.part1_chr1-6.fa
+-rw-rw-r-- 1 tongyin tongyin 444M Oct 22 17:31 Cinnamomum.burmami.part2_rest.fa
+drwxrwxr-x 2 tongyin tongyin 4.0K Oct 21 19:44 第一次尝试
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ grep -v '^#' Cinnamomum.burmami.helixer_full.gff > temp.gff && mv temp.gff Cinnamomum.burmami.helixer_full.gff
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ wc -l Cinnamomum.burmami.helixer_full.gff
+633888 Cinnamomum.burmami.helixer_full.gff
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ head Cinnamomum.burmami.helixer_full.gff
+Chr1    Helixer gene    11982   13066   .       +       .       ID=chr1_Chr1_000001
+Chr1    Helixer mRNA    11982   13066   .       +       .       ID=chr1_Chr1_000001.1;Parent=chr1_Chr1_000001
+Chr1    Helixer exon    11982   13066   .       +       .       ID=chr1_Chr1_000001.1.exon.1;Parent=chr1_Chr1_000001.1
+Chr1    Helixer five_prime_UTR  11982   12090   .       +       .       ID=chr1_Chr1_000001.1.five_prime_UTR.1;Parent=chr1_Chr1_000001.1
+Chr1    Helixer CDS     12091   12747   .       +       0       ID=chr1_Chr1_000001.1.CDS.1;Parent=chr1_Chr1_000001.1
+Chr1    Helixer three_prime_UTR 12748   13066   .       +       .       ID=chr1_Chr1_000001.1.three_prime_UTR.1;Parent=chr1_Chr1_000001.1
+Chr1    Helixer gene    19630   19890   .       +       .       ID=chr1_Chr1_000002
+Chr1    Helixer mRNA    19630   19890   .       +       .       ID=chr1_Chr1_000002.1;Parent=chr1_Chr1_000002
+Chr1    Helixer exon    19630   19890   .       +       .       ID=chr1_Chr1_000002.1.exon.1;Parent=chr1_Chr1_000002.1
+Chr1    Helixer five_prime_UTR  19630   19630   .       +       .       ID=chr1_Chr1_000002.1.five_prime_UTR.1;Parent=chr1_Chr1_000002.1
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ cut -f1 Cinnamomum.burmami.helixer_full.gff | sort | uniq | head
+Chr1
+Chr10
+Chr11
+Chr12
+Chr2
+Chr3
+Chr4
+Chr5
+Chr6
+Chr7
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ sort -k1,1 -k4,4n Cinnamomum.burmami.helixer_full.gff -o Cinnamomum.burmami.helixer_full.gff
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ cut -f1 Cinnamomum.burmami.helixer_full.gff | sort | uniq | head
+Chr1
+Chr10
+Chr11
+Chr12
+Chr2
+Chr3
+Chr4
+Chr5
+Chr6
+Chr7
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ cut -f1 Cinnamomum.burmami.helixer_full.gff | sort | uniq | wc -l
+43
