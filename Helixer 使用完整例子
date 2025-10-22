@@ -185,3 +185,77 @@ Chr6
 Chr7
 (base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ cut -f1 Cinnamomum.burmami.helixer_full.gff | sort | uniq | wc -l
 43
+
+
+
+五、发现问题
+在missing_in_gff.txt里面列出在 FASTA 中有但 GFF 中缺失的染色体/scaffold 名称。
+能清楚看到 Helixer 没注释到哪些部分。
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ cut -f1 Cinnamomum.burmami.helixer_full.gff | sort | uniq > gff_seq_list.txt
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ cat gff_seq_list.txt
+Chr1
+Chr10
+Chr11
+Chr12
+Chr2
+Chr3
+Chr4
+Chr5
+Chr6
+Chr7
+Chr8
+Chr9
+HiC_scaffold_133
+HiC_scaffold_137
+HiC_scaffold_139
+HiC_scaffold_14
+HiC_scaffold_140
+HiC_scaffold_143
+HiC_scaffold_144
+HiC_scaffold_145
+HiC_scaffold_149
+HiC_scaffold_150
+HiC_scaffold_154
+HiC_scaffold_16
+HiC_scaffold_160
+HiC_scaffold_169
+HiC_scaffold_18
+HiC_scaffold_188
+HiC_scaffold_190
+HiC_scaffold_20
+HiC_scaffold_204
+HiC_scaffold_21
+HiC_scaffold_221
+HiC_scaffold_225
+HiC_scaffold_24
+HiC_scaffold_272
+HiC_scaffold_374
+HiC_scaffold_375
+HiC_scaffold_377
+HiC_scaffold_378
+HiC_scaffold_417
+HiC_scaffold_424
+HiC_scaffold_432
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ grep ">" Cinnamomum.burmami.chr.v2.0.toplevel.fa | sed 's/>//' > fa_seq_list.txt
+grep: Cinnamomum.burmami.chr.v2.0.toplevel.fa: No such file or directory
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ grep ">" Cinnamomum.burmami.chr.v2.0.toplevel.fa | sed 's/>//' > fa_seq_list.txt
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ comm -23 fa_seq_list.txt gff_seq_list.txt > missing_in_gff.txt
+comm: file 1 is not in sorted order
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ ^C
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ sort fa_seq_list.txt -o fa_seq_list.txt
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ sort gff_seq_list.txt -o gff_seq_list.txt
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ comm -23 fa_seq_list.txt gff_seq_list.txt > missing_in_gff.txt
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$ ls -lh
+total 2.3G
+-rw-rw-r-- 1 tongyin tongyin  36M Oct 23 00:33 chr1_helixer.gff
+-rw-rw-r-- 1 tongyin tongyin  24M Oct 23 00:32 chr2_helixer.gff
+-rw-rw-r-- 1 tongyin tongyin 1.1G Nov 10  2023 Cinnamomum.burmami.chr.v2.0.toplevel.fa
+-rw-rw-r-- 1 tongyin tongyin  60M Oct 23 00:39 Cinnamomum.burmami.helixer_full.gff
+-rw-rw-r-- 1 tongyin tongyin 637M Oct 22 17:31 Cinnamomum.burmami.part1_chr1-6.fa
+-rw-rw-r-- 1 tongyin tongyin 444M Oct 22 17:31 Cinnamomum.burmami.part2_rest.fa
+-rw-rw-r-- 1 tongyin tongyin 1.2K Oct 23 01:14 fa_seq_list.txt
+-rw-rw-r-- 1 tongyin tongyin  584 Oct 23 01:14 gff_seq_list.txt
+-rw-rw-r-- 1 tongyin tongyin  557 Oct 23 01:14 missing_in_gff.txt
+drwxrwxr-x 2 tongyin tongyin 4.0K Oct 21 19:44 第一次尝试
+drwxrwxr-x 2 tongyin tongyin 4.0K Oct 23 01:12 第二次尝试（最终）
+(base) tongyin@SunLab:~/data/aromatic_gff/Cinnamomum_burmanni$
