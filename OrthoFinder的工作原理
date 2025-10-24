@@ -1,3 +1,28 @@
+安装：
+conda create -n of3_env python=3.10
+conda activate of3_env
+conda install -c bioconda -c conda-forge orthofinder
+验证安装，输出版本：
+orthofinder --h
+
+
+如果你还要跑完整 OrthoFinder，需要安装加速工具
+
+官方推荐（非常重要，提高速度×100）：
+
+工具	安装命令
+Diamond	conda install -c bioconda diamond
+FastTree	conda install -c bioconda fasttree
+MAFFT	conda install -c bioconda mafft
+FAMSA（可选）	conda install -c bioconda famsa
+
+你可以一次装：
+
+conda install -c bioconda -c conda-forge diamond fasttree mafft famsa
+
+
+
+
 OrthoFinder的工作原理可以概括为以下几个主要步骤，我会用通俗的语言解释：
 
 序列比对（Sequence Similarity Search）：
