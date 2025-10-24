@@ -1,0 +1,121 @@
+我想就是从这个大文件夹里面的43个物种小文件夹里面按照那个名单调用到一个文件里面。意思是现在最大文件夹是aromatic_orthofinder，里面又有43种植物的小文件夹，进入每个植物文件夹里面的faa是我要统一调度的
+
+
+
+(of3_env) tongyin@SunLab:/data/tongyin/aromatic_orthofinder$ # 创建目标目录
+(of3_env) tongyin@SunLab:/data/tongyin/aromatic_orthofinder$ mkdir -p /data/tongyin/aromatic_orthofinder/all_faa
+
+# 使用find命令直接复制所有faa文件
+find /data/tongyin/aromatic_orthofinder -name "*.faa" -type f -exec cp {} /data/tongyin/aromatic_orthofinder/all_faa/ \;
+
+# 检查结果
+ls -lh /data/tongyin/aromatic_orthofinder/all_faa/(of3_env) tongyin@SunLab:/data/tongyin/aromatic_orthofinder$
+(of3_env) tongyin@SunLab:/data/tongyin/aromatic_orthofinder$ # 使用find命令直接复制所有faa文件
+(of3_env) tongyin@SunLab:/data/tongyin/aromatic_orthofinder$ find /data/tongyin/aromatic_orthofinder -name "*.faa" -type f -exec cp {} /data/tongyin/aromatic_orthofinder/all_faa/ \;
+cp: '/data/tongyin/aromatic_orthofinder/all_faa/Santalum_album_protein.faa' and '/data/tongyin/aromatic_orthofinder/all_faa/Santalum_album_protein.faa' are the same file
+cp: '/data/tongyin/aromatic_orthofinder/all_faa/Mentha_longifolia_protein.faa' and '/data/tongyin/aromatic_orthofinder/all_faa/Mentha_longifolia_protein.faa' are the same file
+cp: '/data/tongyin/aromatic_orthofinder/all_faa/Citrus_reticulata_protein.faa' and '/data/tongyin/aromatic_orthofinder/all_faa/Citrus_reticulata_protein.faa' are the same file
+cp: '/data/tongyin/aromatic_orthofinder/all_faa/Crocus_sativus_protein.faa' and '/data/tongyin/aromatic_orthofinder/all_faa/Crocus_sativus_protein.faa' are the same file
+cp: '/data/tongyin/aromatic_orthofinder/all_faa/Rosa_chinensis_protein.faa' and '/data/tongyin/aromatic_orthofinder/all_faa/Rosa_chinensis_protein.faa' are the same file
+cp: '/data/tongyin/aromatic_orthofinder/all_faa/Camphora_officinarum_Protein.faa' and '/data/tongyin/aromatic_orthofinder/all_faa/Camphora_officinarum_Protein.faa' are the same file
+cp: '/data/tongyin/aromatic_orthofinder/all_faa/Pogostemon_cablin_protein.faa' and '/data/tongyin/aromatic_orthofinder/all_faa/Pogostemon_cablin_protein.faa' are the same file
+cp: '/data/tongyin/aromatic_orthofinder/all_faa/Dendrobium_catenatum_protein.faa' and '/data/tongyin/aromatic_orthofinder/all_faa/Dendrobium_catenatum_protein.faa' are the same file
+cp: '/data/tongyin/aromatic_orthofinder/all_faa/Camellia_sinensis_protein.faa' and '/data/tongyin/aromatic_orthofinder/all_faa/Camellia_sinensis_protein.faa' are the same file
+cp: '/data/tongyin/aromatic_orthofinder/all_faa/Yulania_biondii_protein.faa' and '/data/tongyin/aromatic_orthofinder/all_faa/Yulania_biondii_protein.faa' are the same file
+cp: '/data/tongyin/aromatic_orthofinder/all_faa/Nymphaea_colorata_protein.faa' and '/data/tongyin/aromatic_orthofinder/all_faa/Nymphaea_colorata_protein.faa' are the same file
+cp: '/data/tongyin/aromatic_orthofinder/all_faa/Osmanthus_fragrans_Rixianggui_protein.faa' and '/data/tongyin/aromatic_orthofinder/all_faa/Osmanthus_fragrans_Rixianggui_protein.faa' are the same file
+cp: '/data/tongyin/aromatic_orthofinder/all_faa/Matthiola_incana_protein.faa' and '/data/tongyin/aromatic_orthofinder/all_faa/Matthiola_incana_protein.faa' are the same file
+cp: '/data/tongyin/aromatic_orthofinder/all_faa/Thymus_quinquecostatus_protein.faa' and '/data/tongyin/aromatic_orthofinder/all_faa/Thymus_quinquecostatus_protein.faa' are the same file
+cp: '/data/tongyin/aromatic_orthofinder/all_faa/Dianthus_caryophyllus_protein.faa' and '/data/tongyin/aromatic_orthofinder/all_faa/Dianthus_caryophyllus_protein.faa' are the same file
+cp: '/data/tongyin/aromatic_orthofinder/all_faa/Rosa_rugosa_protein.faa' and '/data/tongyin/aromatic_orthofinder/all_faa/Rosa_rugosa_protein.faa' are the same file
+cp: '/data/tongyin/aromatic_orthofinder/all_faa/Leucaena_leucocephala_protein.faa' and '/data/tongyin/aromatic_orthofinder/all_faa/Leucaena_leucocephala_protein.faa' are the same file
+cp: '/data/tongyin/aromatic_orthofinder/all_faa/Hamamelis_virginiana_protein.faa' and '/data/tongyin/aromatic_orthofinder/all_faa/Hamamelis_virginiana_protein.faa' are the same file
+cp: '/data/tongyin/aromatic_orthofinder/all_faa/Prunus_mume_protein.faa' and '/data/tongyin/aromatic_orthofinder/all_faa/Prunus_mume_protein.faa' are the same file
+cp: '/data/tongyin/aromatic_orthofinder/all_faa/Amborella_trichopoda_protein.faa' and '/data/tongyin/aromatic_orthofinder/all_faa/Amborella_trichopoda_protein.faa' are the same file
+cp: '/data/tongyin/aromatic_orthofinder/all_faa/Paeonia_ludlowii_protein.faa' and '/data/tongyin/aromatic_orthofinder/all_faa/Paeonia_ludlowii_protein.faa' are the same file
+cp: '/data/tongyin/aromatic_orthofinder/all_faa/Zingiber_officinale_protein.faa' and '/data/tongyin/aromatic_orthofinder/all_faa/Zingiber_officinale_protein.faa' are the same file
+cp: '/data/tongyin/aromatic_orthofinder/all_faa/Cymbopogon_citratus_protein.faa' and '/data/tongyin/aromatic_orthofinder/all_faa/Cymbopogon_citratus_protein.faa' are the same file
+cp: '/data/tongyin/aromatic_orthofinder/all_faa/Jasminum_sambac_protein.faa' and '/data/tongyin/aromatic_orthofinder/all_faa/Jasminum_sambac_protein.faa' are the same file
+cp: '/data/tongyin/aromatic_orthofinder/all_faa/Rosmarinus_officinalis_protein.faa' and '/data/tongyin/aromatic_orthofinder/all_faa/Rosmarinus_officinalis_protein.faa' are the same file
+cp: '/data/tongyin/aromatic_orthofinder/all_faa/Nelumbo_nucifera_protein.faa' and '/data/tongyin/aromatic_orthofinder/all_faa/Nelumbo_nucifera_protein.faa' are the same file
+cp: '/data/tongyin/aromatic_orthofinder/all_faa/Origanum_vulgare_protein.faa' and '/data/tongyin/aromatic_orthofinder/all_faa/Origanum_vulgare_protein.faa' are the same file
+cp: '/data/tongyin/aromatic_orthofinder/all_faa/Vanilla_planifolia_protein.faa' and '/data/tongyin/aromatic_orthofinder/all_faa/Vanilla_planifolia_protein.faa' are the same file
+cp: '/data/tongyin/aromatic_orthofinder/all_faa/Iris_pallida_protein.faa' and '/data/tongyin/aromatic_orthofinder/all_faa/Iris_pallida_protein.faa' are the same file
+cp: '/data/tongyin/aromatic_orthofinder/all_faa/Styphnolobium_japonicum_protein.faa' and '/data/tongyin/aromatic_orthofinder/all_faa/Styphnolobium_japonicum_protein.faa' are the same file
+cp: '/data/tongyin/aromatic_orthofinder/all_faa/Cinnamomum.burmami_protein.faa' and '/data/tongyin/aromatic_orthofinder/all_faa/Cinnamomum.burmami_protein.faa' are the same file
+cp: '/data/tongyin/aromatic_orthofinder/all_faa/Aquilaria_sinensis_protein.faa' and '/data/tongyin/aromatic_orthofinder/all_faa/Aquilaria_sinensis_protein.faa' are the same file
+cp: '/data/tongyin/aromatic_orthofinder/all_faa/Chrysanthemum_lavandulifolium_protein.faa' and '/data/tongyin/aromatic_orthofinder/all_faa/Chrysanthemum_lavandulifolium_protein.faa' are the same file
+cp: '/data/tongyin/aromatic_orthofinder/all_faa/Lonicera_japonica_protein.faa' and '/data/tongyin/aromatic_orthofinder/all_faa/Lonicera_japonica_protein.faa' are the same file
+cp: '/data/tongyin/aromatic_orthofinder/all_faa/Piper_nigrum_protein.faa' and '/data/tongyin/aromatic_orthofinder/all_faa/Piper_nigrum_protein.faa' are the same file
+cp: '/data/tongyin/aromatic_orthofinder/all_faa/Syringa_oblata_protein.faa' and '/data/tongyin/aromatic_orthofinder/all_faa/Syringa_oblata_protein.faa' are the same file
+cp: '/data/tongyin/aromatic_orthofinder/all_faa/Chimonanthus_praecox_protein.faa' and '/data/tongyin/aromatic_orthofinder/all_faa/Chimonanthus_praecox_protein.faa' are the same file
+cp: '/data/tongyin/aromatic_orthofinder/all_faa/Coriandrum_sativum_protein.faa' and '/data/tongyin/aromatic_orthofinder/all_faa/Coriandrum_sativum_protein.faa' are the same file
+cp: '/data/tongyin/aromatic_orthofinder/all_faa/Lilium_sargentiae_protein.faa' and '/data/tongyin/aromatic_orthofinder/all_faa/Lilium_sargentiae_protein.faa' are the same file
+cp: '/data/tongyin/aromatic_orthofinder/all_faa/Coffea_arabica_protein.faa' and '/data/tongyin/aromatic_orthofinder/all_faa/Coffea_arabica_protein.faa' are the same file
+cp: '/data/tongyin/aromatic_orthofinder/all_faa/Curcuma_longa_protein.faa' and '/data/tongyin/aromatic_orthofinder/all_faa/Curcuma_longa_protein.faa' are the same file
+cp: '/data/tongyin/aromatic_orthofinder/all_faa/Rhododendron_ovatum_protein.faa' and '/data/tongyin/aromatic_orthofinder/all_faa/Rhododendron_ovatum_protein.faa' are the same file
+(of3_env) tongyin@SunLab:/data/tongyin/aromatic_orthofinder$
+(of3_env) tongyin@SunLab:/data/tongyin/aromatic_orthofinder$ # 检查结果
+(of3_env) tongyin@SunLab:/data/tongyin/aromatic_orthofinder$ ls -lh /data/tongyin/aromatic_orthofinder/all_faa/
+total 969M
+-rw-rw-r-- 1 tongyin tongyin  12M Oct 25 01:47 Amborella_trichopoda_protein.faa
+-rw-rw-r-- 1 tongyin tongyin  12M Oct 25 01:47 Aquilaria_sinensis_protein.faa
+-rw-rw-r-- 1 tongyin tongyin  36M Oct 25 01:47 Camellia_sinensis_protein.faa
+-rw-rw-r-- 1 tongyin tongyin  26M Oct 25 01:47 Camphora_officinarum_Protein.faa
+-rw-rw-r-- 1 tongyin tongyin  11M Oct 25 01:47 Chimonanthus_praecox_protein.faa
+-rw-rw-r-- 1 tongyin tongyin  23M Oct 25 01:47 Chrysanthemum_lavandulifolium_protein.faa
+-rw-rw-r-- 1 tongyin tongyin  46M Oct 25 01:47 Cinnamomum.burmami_protein.faa
+-rw-rw-r-- 1 tongyin tongyin  20M Oct 25 01:47 Citrus_reticulata_protein.faa
+-rw-rw-r-- 1 tongyin tongyin  48M Oct 25 01:47 Coffea_arabica_protein.faa
+-rw-rw-r-- 1 tongyin tongyin  15M Oct 25 01:47 Coriandrum_sativum_protein.faa
+-rw-rw-r-- 1 tongyin tongyin  26M Oct 25 01:47 Crocus_sativus_protein.faa
+-rw-rw-r-- 1 tongyin tongyin  19M Oct 25 01:47 Curcuma_longa_protein.faa
+-rw-rw-r-- 1 tongyin tongyin  11M Oct 25 01:47 Cymbopogon_citratus_protein.faa
+-rw-rw-r-- 1 tongyin tongyin  19M Oct 25 01:47 Dendrobium_catenatum_protein.faa
+-rw-rw-r-- 1 tongyin tongyin  17M Oct 25 01:47 Dianthus_caryophyllus_protein.faa
+-rw-rw-r-- 1 tongyin tongyin  12M Oct 25 01:47 Gardenia_jasminoides_protein.faa
+-rw-rw-r-- 1 tongyin tongyin  56M Oct 25 01:47 Hamamelis_virginiana_protein.faa
+-rw-rw-r-- 1 tongyin tongyin  26M Oct 25 01:47 Iris_pallida_protein.faa
+-rw-rw-r-- 1 tongyin tongyin  11M Oct 25 01:47 Jasminum_sambac_protein.faa
+-rw-rw-r-- 1 tongyin tongyin  49M Oct 25 01:47 Leucaena_leucocephala_protein.faa
+-rw-rw-r-- 1 tongyin tongyin  28M Oct 25 01:47 Lilium_sargentiae_protein.faa
+-rw-rw-r-- 1 tongyin tongyin  13M Oct 25 01:47 Lonicera_japonica_protein.faa
+-rw-rw-r-- 1 tongyin tongyin  23M Oct 25 01:47 Matthiola_incana_protein.faa
+-rw-rw-r-- 1 tongyin tongyin 9.4M Oct 25 01:47 Mentha_longifolia_protein.faa
+-rw-rw-r-- 1 tongyin tongyin  22M Oct 25 01:47 Nelumbo_nucifera_protein.faa
+-rw-rw-r-- 1 tongyin tongyin  19M Oct 25 01:47 Nymphaea_colorata_protein.faa
+-rw-rw-r-- 1 tongyin tongyin  12M Oct 25 01:47 Origanum_vulgare_protein.faa
+-rw-rw-r-- 1 tongyin tongyin  20M Oct 25 01:47 Osmanthus_fragrans_Rixianggui_protein.faa
+-rw-rw-r-- 1 tongyin tongyin  18M Oct 25 01:47 Paeonia_ludlowii_protein.faa
+-rw-rw-r-- 1 tongyin tongyin  19M Oct 25 01:47 Piper_nigrum_protein.faa
+-rw-rw-r-- 1 tongyin tongyin  46M Oct 25 01:47 Pogostemon_cablin_protein.faa
+-rw-rw-r-- 1 tongyin tongyin  16M Oct 25 01:47 Prunus_mume_protein.faa
+-rw-rw-r-- 1 tongyin tongyin  19M Oct 25 01:47 Rhododendron_ovatum_protein.faa
+-rw-rw-r-- 1 tongyin tongyin  27M Oct 25 01:47 Rosa_chinensis_protein.faa
+-rw-rw-r-- 1 tongyin tongyin  23M Oct 25 01:47 Rosa_rugosa_protein.faa
+-rw-rw-r-- 1 tongyin tongyin  22M Oct 25 01:47 Rosmarinus_officinalis_protein.faa
+-rw-rw-r-- 1 tongyin tongyin 9.2M Oct 25 01:47 Santalum_album_protein.faa
+-rw-rw-r-- 1 tongyin tongyin  14M Oct 25 01:47 Styphnolobium_japonicum_protein.faa
+-rw-rw-r-- 1 tongyin tongyin  34M Oct 25 01:47 Syringa_oblata_protein.faa
+-rw-rw-r-- 1 tongyin tongyin  21M Oct 25 01:47 Thymus_quinquecostatus_protein.faa
+-rw-rw-r-- 1 tongyin tongyin  12M Oct 25 01:47 Vanilla_planifolia_protein.faa
+-rw-rw-r-- 1 tongyin tongyin  14M Oct 25 01:47 Yulania_biondii_protein.faa
+-rw-rw-r-- 1 tongyin tongyin  53M Oct 25 01:47 Zingiber_officinale_protein.faa
+(of3_env) tongyin@SunLab:/data/tongyin/aromatic_orthofinder$ ls -1 | wc -l
+44
+(of3_env) tongyin@SunLab:/data/tongyin/aromatic_orthofinder$ cd all_faa
+(of3_env) tongyin@SunLab:/data/tongyin/aromatic_orthofinder/all_faa$ ls -1 | wc -l
+43
+
+
+
+方案1：直接复制所有faa文件（推荐）最简单直接，不需要处理空格和路径问题。find 命令会自动处理所有包含空格的文件名和目录名。
+bash
+# 创建目标目录
+mkdir -p /data/tongyin/aromatic_orthofinder/all_faa
+
+# 使用find命令直接复制所有faa文件
+find /data/tongyin/aromatic_orthofinder -name "*.faa" -type f -exec cp {} /data/tongyin/aromatic_orthofinder/all_faa/ \;
+
+# 检查结果
+ls -lh /data/tongyin/aromatic_orthofinder/all_faa/
