@@ -1,0 +1,41 @@
+# 综合检查脚本
+echo "=== 综合检查报告 ==="
+total_files=0
+problem_files=0
+
+for file in *_no_stop.fa; do
+    ((total_files++))
+    file_ok=true
+    
+    # 检查终止密码子
+    if grep -q "*" "$file"; then
+        echo "❌ $file: 包含终止密码子"
+        file_ok=false
+        ((problem_files++))
+    fi
+    
+    # 检查文件是否为空
+    if [ ! -s "$file" ]; then
+        echo "❌ $file: 文件为空"
+        file_ok=false
+        ((problem_files++))
+    fi
+    
+    # 检查是否有序列
+    seq_count=$(grep -c ">" "$file")
+    if [ "$seq_count" -eq 0 ]; then
+        echo "❌ $file: 没有序列"
+        file_ok=false
+        ((problem_files++))
+    fi
+    
+    # 如果文件正常，显示基本信息
+    if [ "$file_ok" = true ]; then
+        echo "✅ $file: 正常 ($seq_count 条序列)"
+    fi
+done
+
+echo -e "\n=== 总结 ==="
+echo "总共检查文件: $total_files"
+echo "有问题文件: $problem_files"
+echo "正常文件: $((total_files - problem_files))"
