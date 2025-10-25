@@ -1,0 +1,17 @@
+方法2测试（不实际执行重命名）：
+
+bash
+# 先预览将要执行的操作，不实际重命名
+for file in *_no_stop.fa; do
+    new_name="${file/_no_stop.fa/.fa}"
+    echo "将会重命名: $file -> $new_name"
+done
+确认无误后执行：
+
+bash
+# 实际执行重命名
+for file in *_no_stop.fa; do
+    new_name="${file/_no_stop.fa/.fa}"
+    mv "$file" "$new_name"
+    echo "已重命名: $file -> $new_name"
+done
