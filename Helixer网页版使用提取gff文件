@@ -1,4 +1,4 @@
-如果文件本身超过1g，则需要拆分成两个
+如果文件本身超过1g，则需要拆分成两个/多个
 
 法一：
 查看有多少序列：seqkit stats Cinnamomum.burmami.chr.v2.0.toplevel.fa
