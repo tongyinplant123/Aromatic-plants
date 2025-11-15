@@ -1,0 +1,370 @@
+一、低拷贝建树/单拷贝建树
+“单拷贝基因（single‑copy genes）”和“低拷贝基因（low‑copy genes）”
+直系同源 (Orthologs)和旁系同源 (Paralogs)
+（一）orthofinder 找到直系同源
+
+什么是正交组（Orthogroup）？
+一个祖先物种经历过一次物种事件之后，分别形成了物种A和物种B，
+祖先物种gene分化得到geneA和geneB —— geneA和geneB，称为正交群（Orthogroup）
+Note：paralogs，也可以和orthologs一起，存在于同一个Orthogroup中
+
+为什么要研究正交群？
+正交群中的所有基因都来自<font color='yellow'>单个祖先基因</font> —— 正交群中的所有基因都有类似的序列和功能
+由于基因重复和丢失在进化中经常发生，<u>1 vs 1 的直系同源物非常少见</u>，
+因此，分析正交群的所有情况（1 vs 1，1 vs more，more vs more）可以得到有关进化历史的信息。
+“真正识别直系同源物的唯一方法，是构建系统发育树” —— lakeseafly
+
+（一.1）安装orthofinder：
+conda env list
+# conda environments:
+#
+base                  *  /home/tongyin/miniconda3
+aromatic                 /home/tongyin/miniconda3/envs/aromatic
+busco_analysis           /home/tongyin/miniconda3/envs/busco_analysis
+of3_env                  /home/tongyin/miniconda3/envs/of3_env
+                         /home/yuxuan/anaconda3/envs/fangxiang_plant
+conda activate of3_env
+conda install -c bioconda orthofinder -y
+解析以上：
+conda：调用 Conda 包管理器（需已装好 Anaconda/Miniconda）
+install：子命令：给当前已激活的环境装软件（不会再新建环境）
+-c bioconda：指定频道（channel）优先去 bioconda 找包；bioconda 是生信软件大本营
+orthofinder：要装的软件本体；Conda 会自动把依赖（diamond、mcl、fastme 等）一起解决。
+-y：全程“yes”，不再问你是否确认
+
+安装orthofinder且如果是加上新建一个环境：
+conda create -n orthofinder2 -c bioconda orthofinder -y
+create：子命令：新建一个隔离环境，避免和系统或其他环境冲突
+-n orthofinder2：环境名字自定义，这里叫 orthofinder2，激活时用 conda activate orthofinder2
+
+（一.2）准备数据，运行orthofinder
+OrthoFinder2要求输入的序列为氨基酸（蛋白质）序列
+我们统一了蛋白文件的名称：“拉丁名.fa”
+将所有蛋白文件抓取或者复制到一个新文件夹下
+进行简要清洗
+运行orthofinder前，注意系统线程
+
+在 Linux 系统中，每个进程有一个最大可以打开的文件数限制。默认情况下，系统的最大文件描述符限制可能不足以满足高并发任务的需求，尤其是像 Orthofinder 这样需要大量并行计算的程序。
+ulimit -n 里的 n 就是 number of open file descriptors（进程能同时打开的文件句柄数）。
+每打开一个文件、管道、socket 都占一个 fd。
+默认值由系统配置文件（/etc/security/limits.conf、systemd、sysctl）决定，普通用户通常看到的是 1024，root 或登录节点可能给到 4096、65536 甚至更大。
+生信任务（OrthoFinder、IQ-TREE、BUSCO、STAR）一旦并行线程多、输入文件多，很容易撞到这个上限，出现
+Too many open files → 程序崩溃。
+“核”决定同时用多少 CPU 算；
+“文件句柄”决定同时能打开多少文件；
+查看当前的文件描述符限制：
+
+ulimit -n
+ulimit -n 65536
+nohup orthofinder -f ./ -t 8 > output.log 2>&1 &
+解析：让 OrthoFinder 在后台用 8 核跑当前目录下的蛋白文件，终端关了也不中断，所有屏幕输出统一记到 output.log
+
+运行后得到很多文件结果：
+
+(1)Orthogroups 直系同源组目录
+Orthogroups_SingleCopyOrthologues.txt：每个物种正好包含一个基因的直系同源群列表，即它们包含一对一的直系同源物。 这种直系同源组非常适合进行种间比较和种树推断。
+Orthogroups_SingleCopyOrthologues.txt 为 0 只是说明：不存在“所有物种都恰好 1 拷贝”的严格单拷贝直系同源组，这在植物、昆虫、鱼类等全基因组重复（WGD）+ 片段缺失频繁的类群里是家常便饭。
+1 文件是怎么来的
+OrthoFinder 只把同时满足以下条件的 orthogroup 写进该文件：
+每个物种 恰好 1 条序列（1:1:1…）；
+不允许缺失、不允许多拷贝。
+只要有一个物种缺失或多 1 条，就被踢出去 → 文件立马变空。
+2 为什么常见为 0
+WGD 后保留率不同 → 多拷贝；
+基因组组装/注释缺失 → 某些物种缺基因；
+近期独立重复 → 局部 2-3 拷贝；
+样本数越多（>10 个），“全部恰好 1 拷贝”概率指数下降。
+
+Orthogroups.tsv：用制表符分隔的文件，每一行包含属于单个直系同源组的基因。每个物种的直系同源组的基因单独排成一列。
+
+Orthogroups.txt: 类似于Orthogroups.tsv，只不过是 OrthoMCL的输出格式。
+
+Orthogroups_UnassignedGenes.tsv：用制表符分隔开的文件，格式上与Orthogroups.tsv相同，但包含的是未分配到任何直系同源组的基因。
+
+Orthogroups.GeneCount.tsv：格式同Orthogroups.tsv。每一行为一个直系同源组，每一列是每个物种每个直系同源组的基因数目。
+
+（2）Orthologues 直系同源目录 
+（3）Comparative_Genomics_Statistics 比较基因组学数据目录
+（4）Gene_Duplication_Events 基因复制事件目录
+（5）Gene_Trees 基因树目录：为每个直系同源群推断的系统发育树。
+（6）Orthogroup_Sequences 直系同源组序列目录：每个直系同源群的FASTA文件,给出了每个直系同源群中每个基因的氨基酸序列。
+（7）Resolved_Gene_Trees 解析的基因树目录：为每个直系同源组推断出有根的系统发育树，使用OrthoFinder复制损失合并模型进行解析。
+（8）Single_Copy_Orthologue_Sequences 单拷贝直系同源组序列目录：与直系同源组序列目录相似的文件。每个物种一对一的直系同源组。
+（9）Species_Tree 物种树目录：
+SpeciesTree_rooted.txt：从所有直系同源组推断出的STAG物种树，包含内部节点上的STAG支持值，并以STRIDE(Species Tree Root Inference from Duplication Events)为根。
+STAG(Species Tree from All Genes)是一种从所有基因推测物种树的算法，不同于使用单拷贝的直系同源基因进行进化树构建。
+SpeciesTree_rooted_node_labels.csv：同上，但是节点具有标签，以允许其他结果文件交叉引用物种树中的分支/节点（例如基因复制事件的位置）。
+
+
+（一.3）进一步建树
+**从 OrthoFinder 的「直系同源基因」这一步开始，后面所有操作（低拷贝筛选、比对、修剪、串联、建树）都只是在「挑出来的直系同源基因」内部折腾，OrthoFinder 的「物种树」或「基因家族扩张分析」并没有继续用。**
+
+### 思路骨架（只留关节，不留肌肉）
+
+1. **OrthoFinder 输出**  
+   你只拿走了 `Orthogroups/Orthogroups.tsv`（或 `SingleCopyOrthogroups.txt`），目的：拿到「每个基因对应哪个单拷贝直系组」的清单。  
+   → 这一步已经把所有「非直系、多拷贝、旁系」过滤掉了。
+
+2. **低拷贝筛选（pandas 脚本）**  
+   在 1 的清单里再做一次「留单拷贝、踢多拷贝」＋「控制缺失率」＋「可选：挑长度/进化速率适中的」」。  
+   → 得到一份「最终入选的直系同源基因 ID 列表」。
+
+3. **逐基因比对（mafft）**  
+   按 2 的列表，把每个基因家族的蛋白序列拎出来单独跑 mafft；核酸序列如需回译，用 PAL2NAL 或类似工具。  
+   → 产出「每个基因家族的对齐文件」。
+
+4. **对齐修剪（trimAl / BMGE / whatever）**  
+   把 3 里比对质量差、gap 多的列剃掉；可以设个保守阈值（如 -gt 0.8）。  
+   → 得到「干净对齐文件」。
+
+5. **串联（cat / AMAS / phyutility）**  
+   把 4 里所有基因家族的「干净对齐」按「同一套物种顺序」横着拼成一条超级矩阵。  
+   → 产出「partitioned concatenated alignment」＋一份 partition 文件（告诉 IQ-TREE 哪一段对应哪个基因）。
+
+6. **系统发育推断（IQ-TREE）**  
+   用超级矩阵 + partition 模型，跑 `-bb 1000`（或 `-b 1000`）+ 最佳模型搜索（`-m MFP`）。  
+   → 最终树 `*.treefile` 上的分支支持率就是基于「你亲手挑出来的那批直系同源基因」的联合信号。
+
+---
+
+### 一句话总结
+OrthoFinder 只负责「把直系同源基因挑出来」，后面所有步骤（包括你做的低拷贝二次筛选）都在这条「直系同源」赛道上跑，没有再用到它的物种树或扩张收缩结果。
+
+
+
+实际做法：低拷贝筛选
+
+User: 那orthofinder上面文件输出的single拷贝指的是严格的单拷贝，要求百分百出现，但是如果进一步在orthogroup的基础上进行单拷贝筛选，也可以选种其他百分比对吗
+Kimi: 对，OrthoFinder 给出的 `SingleCopyOrthogroups.txt` 是“**严格单拷贝**”——  
+要求该 Orthogroup 在所有**被分析的物种里恰好各出现 1 条拷贝**，缺一个或重复一个都会被踢掉，等于 100 % 存在且 1:1 对应。
+只要你手里还握着 `Orthogroups.tsv`（或 `Orthogroups.GeneCount.tsv`），就可以自己写脚本，在 Orthogroup 层面放宽条件，比如：
+- 允许 80 % 的物种有且仅有 1 条，其余 20 % 缺失；  
+- 允许个别物种出现 2 条（最近全基因组加倍的 lineage），但把多余拷贝丢掉；  
+- 只挑“大部分物种单拷贝、总长度适中、进化速率不太高”的 Orthogroup。
+这样筛出来的集合就不再是 OrthoFinder 的“严格单拷贝”，而是**自定义的 relaxed single-copy orthologs**，后面照样走 MAFFT → trim → 串联 → IQ-TREE 就行。
+
+目前主流做法是 “relaxed single-copy” 远多于 “strict 100 %”，尤其在大尺度、跨属/跨科的系统发育研究里几乎清一色 relaxed。原因很现实：
+严格 100 % 单拷贝会剧烈牺牲基因数量
+只要有一个物种丢基因或多一份拷贝，整个 Orthogroup 就被扔掉；样本量一上来（比如 30+ 物种），最后往往只剩几十条基因，信息位点严重不足，树不够稳。
+relaxed 标准反而能提高节点分辨率与支撑
+允许 5–20 % 缺失或个别多拷贝（再挑一条最优），常能把可用基因数从几十提到 200–1000+，超级矩阵更长、信号更强，IQ-TREE 给出的分支支持率普遍更高。
+审稿人更关心生物学合理性+方法可重复，而不是“是否 100 %”
+只要在 Methods 里写清楚阈值（如“≥ 80 % 物种单拷贝，缺失或多拷贝时取最长/进化速率最近的一条”），加上缺失率统计表，基本都能过审。
+严格单拷贝一般只出现在小范围、近缘属或群体遗传学文章
+例如 5–10 个最近分化的物种，基因组质量极高，几乎无片段缺失，才值得拿 strict 单拷贝当卖点。
+
+（1）筛选低拷贝
+使用Orthogroups.GeneCount.tsv和tmp10.py脚本筛选
+
+#!/usr/bin/env python3
+import pandas as pd
+
+df = pd.read_csv("Orthogroups.GeneCount.tsv", sep="\t")
+if "Total" in df.columns:
+    df = df.drop(columns=["Total"])
+
+MAX_COPY = 2
+MIN_PRESENCE = 0.1          # 降到 10%
+num_species = len(df.columns) - 1
+threshold = int(num_species * MIN_PRESENCE)
+
+def is_low_copy(row):
+    counts = row[1:].astype(int)
+    present = (counts > 0).sum()
+    return present >= threshold and counts.max() <= MAX_COPY
+
+lowcopy = df[df.apply(is_low_copy, axis=1)]
+lowcopy["Orthogroup"].to_csv("LowCopy_Orthogroups.txt", index=False, header=False)
+print(f"10% 存在率下筛到 {len(lowcopy)} 个低拷贝 Orthogroup。")
+
+即 pandas 在 Orthogroups.GeneCount.tsv 里按‘≥10 % 物种存在且每物种 ≤2 拷贝’的条件筛出目标 Orthogroup 名单即LowCopy_Orthogroups.txt_1；
+
+（2）提取低拷贝序列：
+再从orthofinder的蛋白 FASTA 里提取对应序列
+
+mkdir -p pep_2184
+while read og; do
+    [[ -z "$og" ]] && continue
+    cp "../Results_Nov09/Orthogroup_Sequences/${og}.fa" pep_2184/
+done < LowCopy_Orthogroups.txt_1
+
+得到pep_2184文件夹
+
+这不是“综合化”出来的虚拟序列，也不是多序列比对后的 consensus，就是**把属于同一个 Orthogroup 的所有原始蛋白序列原封不动地堆进一个 FASTA**——简单“打包”，不做任何比对、修剪或合并。
+
+举例：  
+假设 OG0001234 里有 6 个基因：
+
+```
+speciesA|gene1
+speciesB|gene2
+speciesC|gene3
+speciesA|gene4   ← 某物种多拷贝
+speciesD|gene5
+speciesE|gene6
+```
+
+OrthoFinder 只是把它们的**完整蛋白序列**依次写进 `OG0001234.fa`：
+
+```
+>speciesA|gene1
+MADSRV...  
+>speciesB|gene2
+MSDTGL...  
+>speciesC|gene3
+MAKLVL...  
+>speciesA|gene4
+MADSRV...  
+>speciesD|gene5
+MSDTGL...  
+>speciesE|gene6
+MAKLVL...
+```
+
+**没有任何对齐、修剪、拼接或生成 consensus**——这就是你后续要自己做 MAFFT 的那一步。  
+所以：  
+- **Orthogroup_Sequences** = 原始序列打包  
+- **你的下游** = 对这些包逐条做多序列比对、trim、串联。
+
+（3）逐基因比对（mafft）和对齐修剪（trimAl / BMGE / whatever）
+先在环境中安装MAFFT和TRIM和IQTREE
+mafft --version
+trimal
+iqtree -h
+run_tree.sh脚本： 
+
+#!/bin/bash
+#SBATCH --job-name=lowcopy_tree   # 若用 Slurm 可取消注释
+# 若无 Slurm 直接裸跑即可
+
+set -e
+mkdir -p logs aln trim
+
+echo "[$(date)] Step1: MAFFT + trimAl starts ..."
+# 并行对齐+修剪
+ls pep_2184/*.fa | parallel -j 16 --joblog logs/parallel.log '
+    og={/.}
+    mafft-linsi pep_2184/${og}.fa > aln/${og}.aln.fa
+    trimal -automated1 -in aln/${og}.aln.fa -out trim/${og}.trim.fa
+'
+
+echo "[$(date)] Step2: Concatenation ..."
+cat trim/*.trim.fa > supermatrix.fa
+
+echo "[$(date)] Step3: IQ-TREE starts (this will take a few hours) ..."
+nohup iqtree -s supermatrix.fa \
+             -m LG+F+G \
+             -T 0 \
+             -B 1000 \
+             --prefix lowcopy > logs/iqtree.log 2>&1 &
+
+echo "[$(date)] All jobs submitted in background."
+echo "Check logs with: tail -f logs/iqtree.log"
+
+得到aln文件夹和trim文件夹
+对齐文件：aln/ 目录里，每个 OG 一个 .aln.fa（MAFFT 输出）
+修剪文件：trim/ 目录里，每个 OG 一个 .trim.fa（trimAl 输出）
+
+（4）串联（cat / AMAS / phyutility）
+把 4 里所有基因家族的「干净对齐」按「同一套物种顺序」横着拼成一条超级矩阵。
+→ 产出「partitioned concatenated alignment」＋一份 partition 文件（告诉 IQ-TREE 哪一段对应哪个基因）。
+
+# 生成超级矩阵
+cat trim/*.trim.fa > supermatrix.fa
+
+# 看一眼大小（应该几百 MB）
+ls -lh supermatrix.fa
+结果生成的文件里面有序列太短了导致后续iqtree识别不了
+
+
+(of3_env) tongyin@SunLab:/data/tongyin/orthofinder_input_all_fa_3/OrthoFinder/low_copy_analysis$ # 排序看最短的 20 个
+(of3_env) tongyin@SunLab:/data/tongyin/orthofinder_input_all_fa_3/OrthoFinder/low_copy_analysis$ sort -k2 -n trim_len.tsv | head -20
+OG0037714       28
+OG0025306       64
+OG0031580       65
+OG0031438       84
+OG0037377       85
+OG0041277       112
+OG0036467       115
+OG0043293       116
+OG0036117       120
+OG0043351       120
+OG0041565       124
+OG0041724       124
+OG0044874       124
+OG0036052       125
+OG0029845       126
+OG0041878       128
+OG0032788       135
+OG0042000       144
+OG0042063       144
+OG0042474       144
+
+
+
+那么先剔 <100 aa → 再顺序串联 → 立刻得到 顺序一致、长度一致 的超级矩阵。
+
+build_supermatrix.py新脚本用cat写入：
+
+cat > build_matrix.py << 'EOF'
+#!/usr/bin/env python3
+import os, sys
+from collections import OrderedDict, defaultdict
+from Bio import SeqIO
+
+trim_dir = 'trim'          # 原始修剪文件夹
+min_len  = 100             # 最短保留长度
+out_file = 'supermatrix.fa'
+
+# 1. 先统计长度并过滤
+keep_ogs = []
+for f in os.listdir(trim_dir):
+    if not f.endswith('.trim.fa'):
+        continue
+    og = f.replace('.trim.fa', '')
+    seqs = list(SeqIO.parse(os.path.join(trim_dir, f), 'fasta'))
+    if not seqs:
+        continue
+    # 用第一条序列长度代表该 OG 长度
+    og_len = len(str(seqs[0].seq))
+    if og_len >= min_len:
+        keep_ogs.append((og, seqs))
+
+print(f'保留 ≥{min_len} aa 的 OG：{len(keep_ogs)} 个')
+
+# 2. 建立“物种→OG→序列”字典，缺失补 '-'
+species = OrderedDict()
+for og, seqs in keep_ogs:
+    for rec in seqs:
+        species[rec.id] = 1
+species = list(species.keys())
+
+concat_seq = {sp: [] for sp in species}
+for og, seqs in keep_ogs:
+    rec_dict = {rec.id: str(rec.seq) for rec in seqs}
+    ref_len = len(next(iter(rec_dict.values())))
+    for sp in species:
+        concat_seq[sp].append(rec_dict.get(sp, '-' * ref_len))
+
+# 3. 写出超级矩阵
+with open(out_file, 'w') as out:
+    for sp in species:
+        out.write(f'>{sp}\n{"".join(concat_seq[sp])}\n')
+
+total_aa = len(concat_seq[species[0]])
+print(f'超级矩阵完成！物种数：{len(species)}，总位点：{total_aa}')
+EOF
+
+python build_matrix.py运行
+
+# 看结果
+grep -c '^>' supermatrix.fa
+grep -v '^>' supermatrix.fa | tr -d '\n' | wc -c
+ls -lh supermatrix.fa
+
+
+（5）系统发育推断（IQ-TREE）
+用超级矩阵 + partition 模型，跑 -bb 1000（或 -b 1000）+ 最佳模型搜索（-m MFP）。
+→ 最终树 *.treefile 上的分支支持率就是基于「你亲手挑出来的那批直系同源基因」的联合信号。
+
+nohup iqtree -s supermatrix.fa -m LG+F+G -T 60 -B 1000 --prefix lowcopy > iqtree.log 2>&1 &
