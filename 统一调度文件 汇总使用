@@ -129,3 +129,11 @@ find /data/tongyin/orthofinder_input_all_fa_3 -name "*.fa" -type f -exec cp {} /
 find /data/tongyin/orthofinder_input_all_fa_3 -name "*.fa" -type f：查找 /data/tongyin/orthofinder_input_all_fa_3 目录下所有 .fa 格式的文件。
 -exec cp {} /data/tongyin/orthofinder_input_all_fa_4_25.11.17/ \;：对于每个找到的文件，执行 cp 命令，将其复制到指定的目标目录。
 注意末尾的 \; 是必要的，它标识了 -exec 命令的结束。
+
+
+find /data/tongyin/orthofinder_input_all_fa_3 -maxdepth 1 -name "*.fa" -type f -exec cp {} /data/tongyin/orthofinder_input_all_fa_4_25.11.17/ \;
+
+-maxdepth 1：限制搜索深度为1，意味着只搜索当前文件夹下的文件，不会递归到子文件夹。
+-name "*.fa"：只匹配 .fa 后缀的文件。
+-type f：确保只匹配文件，而不是目录。
+-exec cp {} /data/tongyin/orthofinder_input_all_fa_4_25.11.17/ \;：将每个找到的 .fa 文件复制到指定的目标目录。
