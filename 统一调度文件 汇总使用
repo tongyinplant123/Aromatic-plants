@@ -119,3 +119,13 @@ find /data/tongyin/aromatic_orthofinder -name "*.faa" -type f -exec cp {} /data/
 
 # 检查结果
 ls -lh /data/tongyin/aromatic_orthofinder/all_faa/
+
+
+
+
+find /data/tongyin/orthofinder_input_all_fa_3 -name "*.fa" -type f -exec cp {} /data/tongyin/orthofinder_input_all_fa_4_25.11.17/ \;
+
+
+find /data/tongyin/orthofinder_input_all_fa_3 -name "*.fa" -type f：查找 /data/tongyin/orthofinder_input_all_fa_3 目录下所有 .fa 格式的文件。
+-exec cp {} /data/tongyin/orthofinder_input_all_fa_4_25.11.17/ \;：对于每个找到的文件，执行 cp 命令，将其复制到指定的目标目录。
+注意末尾的 \; 是必要的，它标识了 -exec 命令的结束。
