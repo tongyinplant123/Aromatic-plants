@@ -1,0 +1,17 @@
+读入文件
+
+
+
+# 用 read.csv 最简洁
+data1 <- read.csv("ttest_sample.csv")
+
+# 用 read.table 就要把“csv 习惯”全写出来
+data2 <- read.table("ttest_sample.csv",
+                    header = TRUE,
+                    sep = ",",
+                    fileEncoding = "GBK")
+
+
+
+
+
