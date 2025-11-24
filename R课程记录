@@ -1,7 +1,5 @@
 读入文件
 
-
-
 # 用 read.csv 最简洁
 data1 <- read.csv("ttest_sample.csv")
 
@@ -11,7 +9,363 @@ data2 <- read.table("ttest_sample.csv",
                     sep = ",",
                     fileEncoding = "GBK")
 
+一、读入文件
+data <- read.table("ttest_sample.csv", header = TRUE, fileEncoding = "GBK", sep = ",")
+> data
+   day temp
+1  Fri 14.7
+2  Fri 18.5
+3  Fri 25.9
+4  Fri 25.9
+5  Fri 19.5
+6  Fri 17.9
+7  Sat 24.1
+8  Sat 28.6
+9  Sat 16.0
+10 Sat 24.9
+11 Sat 12.2
+12 Sat 21.8
+13 Sat 23.5
+
+二、进行t检验（单样本）
+> t.test(data$temp,mu=40)
+
+	One Sample t-test
+
+data:  data$temp
+t = -13.726, df = 12, p-value = 1.068e-08
+alternative hypothesis: true mean is not equal to 40
+95 percent confidence interval:
+ 18.02854 24.04838
+sample estimates:
+mean of x 
+ 21.03846 
+
+三、按照星期几分组进行检验
+data <- read.csv("ttest_sample.csv", header = TRUE)
+t.test(temp ~ day, data = data, alternative = "greater", var.equal = TRUE)
+
+	Two Sample t-test
+
+data:  temp by day
+t = -0.41283, df = 11, p-value = 0.6562
+alternative hypothesis: true difference in means between group Fri and group Sat is greater than 0
+95 percent confidence interval:
+ -6.343792       Inf
+sample estimates:
+mean in group Fri mean in group Sat 
+         20.40000          21.58571 
+
+
+四、新加一列表示的水平level
+> # install.packages("tidyverse")
+> 
+> # 1. 载入
+> library(tidyverse)
+错误于library(tidyverse): 不存在叫‘tidyverse’这个名称的程序包
+> install.packages("dplyr")
+还安装依赖关系‘tidyselect’
+
+试开URL’https://cran.rstudio.com/bin/windows/contrib/4.4/tidyselect_1.2.1.zip'
+Content type 'application/zip' length 229068 bytes (223 KB)
+downloaded 223 KB
+
+试开URL’https://cran.rstudio.com/bin/windows/contrib/4.4/dplyr_1.1.4.zip'
+Content type 'application/zip' length 1590657 bytes (1.5 MB)
+downloaded 1.5 MB
+
+程序包‘tidyselect’打开成功，MD5和检查也通过
+程序包‘dplyr’打开成功，MD5和检查也通过
+
+下载的二进制程序包在
+	C:\Users\ASUS\AppData\Local\Temp\RtmpUV1IKZ\downloaded_packages里
+> library(dplyr)
+
+载入程序包：‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+警告信息:
+程序包‘dplyr’是用R版本4.4.3 来建造的 
+> data <- read.table("ttest_sample.csv",
++                    header = TRUE,
++                    sep = ",",
++                    fileEncoding = "GBK") %>%
++     mutate(level = if_else(temp >= 18, "high", "low"))
+> 
+> 
+> count(data, level)
+  level n
+1  high 9
+2   low 4
+> t.test(temp ~ level, data = data,
++        alternative = "two.sided",
++        var.equal = TRUE)
+
+	Two Sample t-test
+
+data:  temp by level
+t = 4.6369, df = 11, p-value = 0.0007202
+alternative hypothesis: true difference in means between group high and group low is not equal to 0
+95 percent confidence interval:
+  4.430336 12.436330
+sample estimates:
+mean in group high  mean in group low 
+          23.63333           15.20000 
+
+五、自行生成成对数据组进行检验
+先导入
+# 方法一：直接写数值向量
+x <- c(20, 10, 30)   # 三个数字
+y <- c(42, 43, 46)   # 三个数字
+# 再生成数据框
+pair_data <- data.frame(x, y)
+现在再看：
+pair_data
+
+   x  y
+1 20 42
+2 10 43
+3 30 46
+
+两列对齐，一行一个观测，就可以做配对 t 检验了：
+t.test(pair_data$x, pair_data$y, paired = TRUE)
+
+一句话总结：
+不要把整个向量放进一个字符串里
+
+
+六、百分比t检验
+
+> prop.test(51,400,p=0.1,alternative = "greater",conf.level = 0.99)
+
+	1-sample proportions test with continuity correction
+
+data:  51 out of 400, null probability 0.1
+X-squared = 3.0625, df = 1, p-value = 0.04006
+alternative hypothesis: true p is greater than 0.1
+99 percent confidence interval:
+ 0.09254237 1.00000000
+sample estimates:
+     p 
+0.1275 
+
+"greater" → 检验统计量向右尾累积（上侧）
+相应地，置信区间也只给出下界（lower bound），上界为 1
+所以 alternative = "greater" 里的 greater 就是“大于”这个方向，别无他意。
+
+一句话记忆
+置信区间给范围，p 值给证据，α是你定的“及格线”；
+区间不包含H₀ ⇔ p ≤ α ⇔ 结果显著。
+
+
+        零假设 H₀
+           │
+           ├─ p 值：样本有多“反常”
+           │
+           ├─ α：我事先定的“反常”门槛
+           │
+           └─ 置信区间：真实参数可能落在哪
+              │
+              └─ 若区间**不包含** H₀ 的参数值
+                 ⇔ p ≤ α （拒绝 H₀）
+                 ⇔ 结果“显著”
 
 
 
 
+1.置信区间（CI）——“区间估计”
+目的：给出一个范围，我们相信真实参数有 (1-α) 的概率落在这个范围里。
+计算核心：
+估计值 ± 临界值 × 标准误
+临界值由置信水平（90 %、95 %、99 %）决定；置信水平越高，区间越宽。
+只讲“范围”，不讲“证据强度”。
+
+2.p 值（p-value）——“证据强度”
+定义：在零假设 H₀ 成立的前提下，得到当前或更极端样本的概率。
+用途：衡量数据对 H₀ 的矛盾程度。
+p 越小 → 数据越反常 → 越倾向于拒绝 H₀。
+只讲“概率”，不讲“范围”。
+
+3.α（显著性水平）——“事先划定的门槛”
+常用 0.05、0.01；它是你愿意接受“错杀 H₀”的最大概率。
+决策规则：
+p ≤ α ⇒ 拒绝 H₀（统计显著）
+p > α ⇒ 不拒绝 H₀
+
+
+七、成对百分比t检验
+
+> result<- prop.test(x=c(60,72),n=c(100,120),alternative = "two.sided",conf.level = 0.95,correct = F)
+> result
+
+	2-sample test for equality of proportions without continuity correction
+
+data:  c(60, 72) out of c(100, 120)
+X-squared = 0, df = 1, p-value = 1
+alternative hypothesis: two.sided
+95 percent confidence interval:
+ -0.1300093  0.1300093
+sample estimates:
+prop 1 prop 2 
+   0.6    0.6 
+
+
+表格
+复制
+项目	数值	解读
+样本比例	0.6 vs 0.6	60/100 = 72/120 = 0.6，样本差 = 0
+X-squared	0	卡方统计量 = 0，说明观测值与期望完全一致
+df	1	2×2 列联表自由度 = 1
+p-value	1	在 H₀（两组比例相等）下，得到“当前或更极端”结果的概率是 100%，完全不显著
+95% CI	[-0.130, 0.130]	真实差异有 95% 可能落在 ±13 个百分点之间，区间含 0，与 p=1 一致
+
+
+八、单因素的方差检验
+
+1、导入数据
+正确赋值符号必须是连在一起的箭头：
+a <- c(2,4,3,2,4,7,7,2,5,4,NA)
+
+或者干脆用等号（效果一样，且不会误写空格）：
+a = c(2,4,3,2,4,7,7,2,5,4,NA)
+
+
+> a=c(2,4,3,2,4,7,7,2,5,4,NA)
+> b=c(5,6,8,5,10,7,12,6,6,NA,NA)
+> c=c(7,11,6,6,7,9,5,10,6,3,10)
+> data.frame(a,b,c)
+    a  b  c
+1   2  5  7
+2   4  6 11
+3   3  8  6
+4   2  5  6
+5   4 10  7
+6   7  7  9
+7   7 12  5
+8   2  6 10
+9   5  6  6
+10  4 NA  3
+11 NA NA 10
+> boxplot(data.anova$a,anova$b,data.anova$c)
+错误: 找不到对象'data.anova'
+
+2.导成数据框
+d <- data.frame(a, b, c)
+
+
+更正后：
+
+> a=c(2,4,3,2,4,7,7,2,5,4,5)
+> b=c(5,6,8,5,10,7,12,6,6,7,7)
+> c=c(7,11,6,6,7,9,5,10,6,3,10)
+> anova <- data.frame(a, b, c)
+> boxplot(anova$a, anova$b, anova$c,
++         names = c("a", "b", "c"),  # 横轴标签
++         col   = c("skyblue", "orange", "lightgreen"))
+
+
+> single_column.data <- as.vector(as.matrix(anova))
+> single_column.data变成矩阵
+> data.frame(days=single_column.data,type=c(rep('a',11),rep('b',11),rep('c',11)))
+   days type
+1     2    a
+2     4    a
+3     3    a
+4     2    a
+5     4    a
+6     7    a
+7     7    a
+8     2    a
+9     5    a
+10    4    a
+11    5    a
+12    5    b
+13    6    b
+14    8    b
+15    5    b
+16   10    b
+17    7    b
+18   12    b
+19    6    b
+20    6    b
+21    7    b
+22    7    b
+23    7    c
+24   11    c
+25    6    c
+26    6    c
+27    7    c
+28    9    c
+29    5    c
+30   10    c
+31    6    c
+32    3    c
+33   10    c
+
+type这里的作用也可以叫做分组贴标签
+是的，这里 type 就是典型的分组变量（或称“分组因子”“因子型自变量”）。
+它把 33 行观测分成 3 组：
+a 组（11 行）
+b 组（11 行）
+c 组（11 行）
+后续可以：
+画箱线图 boxplot(days ~ type, data = df)
+做方差分析 aov(days ~ type, data = df)
+分组汇总 aggregate(days ~ type, data = df, FUN = mean)
+所以叫“分组”“因子”“分类变量”都行，本质作用就是给数据打标签，让统计/绘图函数知道按什么类别去比较或汇总。
+
+
+> anova.test.data=data.frame(days=single_column.data,type=c(rep('a',11),rep('b',11),rep('c',11)))
+> anova.test.data保存在了里面
+   days type
+1     2    a
+2     4    a
+3     3    a
+4     2    a
+5     4    a
+6     7    a
+7     7    a
+8     2    a
+9     5    a
+10    4    a
+11    5    a
+12    5    b
+13    6    b
+14    8    b
+15    5    b
+16   10    b
+17    7    b
+18   12    b
+19    6    b
+20    6    b
+21    7    b
+22    7    b
+23    7    c
+24   11    c
+25    6    c
+26    6    c
+27    7    c
+28    9    c
+29    5    c
+30   10    c
+31    6    c
+32    3    c
+33   10    c
+> Re<-aov(days~type,data=anova.test.data)
+> anova(Re)
+Analysis of Variance Table
+
+Response: days
+          Df  Sum Sq Mean Sq F value   Pr(>F)   
+type       2  72.182  36.091  7.8047 0.001866 **
+Residuals 30 138.727   4.624                    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+> 
