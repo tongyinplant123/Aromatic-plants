@@ -77,3 +77,6 @@ head -n 10 文件名     查看前十行
 
 1️⃣ 统计当前目录下文件数量
 ls -1 | wc -l
+
+统计文本多少行（txt）
+grep -c . Input_sra_list.txt
