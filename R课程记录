@@ -600,3 +600,36 @@ id           6   41.8     7.0   3.138   0.0205 *
 Residuals   24   53.3     2.2                     
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+> fit <- aov(y ~ factorA + factorB + Error(id/factorB), data = data1)
+> summary(fit)
+
+Error: id
+          Df Sum Sq Mean Sq F value Pr(>F)  
+factorA    2  80.17   40.08   5.749 0.0403 *
+Residuals  6  41.83    6.97                 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Error: id:factorB
+          Df Sum Sq Mean Sq F value Pr(>F)    
+factorB    3 2179.7   726.6   326.9 <2e-16 ***
+Residuals 24   53.3     2.2                   
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+> fit <- aov(y ~ factorA * factorB + Error(id/factorB), data = data1)
+> summary(fit)
+
+Error: id
+          Df Sum Sq Mean Sq F value Pr(>F)  
+factorA    2  80.17   40.08   5.749 0.0403 *
+Residuals  6  41.83    6.97                 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Error: id:factorB
+                Df Sum Sq Mean Sq F value   Pr(>F)    
+factorB          3 2179.7   726.6 283.278 2.48e-15 ***
+factorA:factorB  6    7.2     1.2   0.466    0.825    
+Residuals       18   46.2     2.6                     
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
