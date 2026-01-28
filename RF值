@@ -1,0 +1,145 @@
+> getwd()
+[1] "C:/Users/ASUS/Desktop/拓扑结构比对/iqtree"
+> library(ape)
+> library(phangorn)
+> 
+> # 重新读取（确保干净）
+> tree_1to1 <- read.tree("IQ-TREE_HybSuite_1to1.rr.tre")
+> tree_HRS  <- read.tree("IQ-TREE_HybSuite_HRS.rr.tre")
+> tree_LS   <- read.tree("IQ-TREE_HybSuite_LS.rr.tre")
+> tree_MI   <- read.tree("IQ-TREE_HybSuite_MI.rr.tre")
+> tree_MO   <- read.tree("IQ-TREE_HybSuite_MO.rr.tre")
+> tree_RLWP <- read.tree("IQ-TREE_HybSuite_RLWP.rr.tre")
+> 
+> trees_raw <- list(tree_1to1, tree_HRS, tree_LS, tree_MI, tree_MO, tree_RLWP)
+> tree_names <- c("1to1", "HRS", "LS", "MI", "MO", "RLWP")
+> tip_sets <- lapply(trees_raw, function(x) x $ tip.label)
+> common_tips <- Reduce(intersect, tip_sets)
+> cat("公共物种数量:", length(common_tips), "\n")
+公共物种数量: 42 
+> print(head(common_tips))
+[1] "Amborella_trichopoda"   "Mentha_longifolia"      "Origanum_vulgare"      
+[4] "Thymus_quinquecostatus" "Rosmarinus_officinalis" "Pogostemon_cablin"     
+> 
+> # 提取每棵树的tip
+> tip_lists <- lapply(trees_raw, function(x) sort(x$tip.label))
+> 
+> # 检查是否完全一致
+> all.equal(tip_lists[[1]], tip_lists[[2]])
+[1] TRUE
+> all.equal(tip_lists[[1]], tip_lists[[3]])
+[1] TRUE
+> all.equal(tip_lists[[1]], tip_lists[[4]])
+[1] TRUE
+> all.equal(tip_lists[[1]], tip_lists[[5]])
+[1] TRUE
+> all.equal(tip_lists[[1]], tip_lists[[6]])
+[1] TRUE
+> 
+> class(trees_raw) <- "multiPhylo"
+> names(trees_raw) <- tree_names
+> 
+> rf_matrix_norm <- RF.dist(trees_raw, normalize = TRUE)
+> rf_matrix_norm
+          1to1       HRS        LS        MI        MO
+HRS  0.3589744                                        
+LS   0.3333333 0.1025641                              
+MI   0.1282051 0.3846154 0.3846154                    
+MO   0.4871795 0.6153846 0.5897436 0.4102564          
+RLWP 0.3589744 0.0000000 0.1025641 0.3846154 0.6153846
+> 
+> rownames(rf_matrix_norm) <- tree_names
+错误于`rownames<-`(`*tmp*`, value = c("1to1", "HRS", "LS", "MI", "MO", : 
+  不能给没有维度的对象设'rownames'
+> rf_matrix_norm_mat <- as.matrix(rf_matrix_norm)
+> 
+> rownames(rf_matrix_norm_mat) <- tree_names
+> colnames(rf_matrix_norm_mat) <- tree_names
+> 
+> rf_matrix_norm_mat
+          1to1       HRS        LS        MI        MO      RLWP
+1to1 0.0000000 0.3589744 0.3333333 0.1282051 0.4871795 0.3589744
+HRS  0.3589744 0.0000000 0.1025641 0.3846154 0.6153846 0.0000000
+LS   0.3333333 0.1025641 0.0000000 0.3846154 0.5897436 0.1025641
+MI   0.1282051 0.3846154 0.3846154 0.0000000 0.4102564 0.3846154
+MO   0.4871795 0.6153846 0.5897436 0.4102564 0.0000000 0.6153846
+RLWP 0.3589744 0.0000000 0.1025641 0.3846154 0.6153846 0.0000000
+> 
+> write.csv(rf_matrix_norm_mat,
++           file = "RF_distance_matrix_normalized.csv",
++           quote = FALSE)
+>
+
+
+
+
+# 加载包
+library(pheatmap)
+
+# 颜色：RF 小 = 绿，RF 大 = 白
+rf_colors <- colorRampPalette(c(
+  "#8BC34A",   # RF 小（拓扑相似）
+  "#E8F5E9",
+  "#FFFFFF"   # RF 大（拓扑差异大）
+))(100)
+
+# 基础热图（不保存，先在 RStudio 看效果）
+pheatmap(
+  rf_matrix_norm_mat,
+  color = rf_colors,
+
+  cluster_rows = TRUE,   # 行聚类（可改 FALSE）
+  cluster_cols = TRUE,   # 列聚类（可改 FALSE）
+
+  display_numbers = TRUE,
+  number_format = "%.2f",
+
+  fontsize = 12,
+  border_color = NA,
+
+  main = "Impact of Stage 3 paralog-handling strategies on concatenated IQ-TREE species tree topology\nbased on Angiosperms353 loci"
+)
+
+
+
+
+
+
+
+
+
+
+png(
+  filename = "完整热图.png",
+  width = 1200,    # 宽度（像素），可根据需要调整
+  height = 1000,   # 高度（像素）
+  res = 400        # 分辨率（dpi），越高越清晰
+)
+# 加载包
+library(pheatmap)
+
+# 颜色：RF 小 = 绿，RF 大 = 白
+rf_colors <- colorRampPalette(c(
+  "#8BC34A",   # RF 小（拓扑相似）
+  "#E8F5E9",
+  "#FFFFFF"   # RF 大（拓扑差异大）
+))(100)
+
+# 基础热图（不保存，先在 RStudio 看效果）
+pheatmap(
+  rf_matrix_norm_mat,
+  color = rf_colors,
+
+  cluster_rows = TRUE,   # 行聚类（可改 FALSE）
+  cluster_cols = TRUE,   # 列聚类（可改 FALSE）
+
+  display_numbers = TRUE,
+  number_format = "%.2f",
+
+  fontsize = 12,
+  border_color = NA,
+
+  main = "Impact of Stage 3 paralog-handling strategies on concatenated IQ-TREE species tree topology\nbased on Angiosperms353 loci"
+)
+
+dev.off()
